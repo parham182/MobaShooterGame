@@ -4,71 +4,71 @@ using UnityEngine.InputSystem;
 
 public class CameraRotation : NetworkBehaviour
 {
+    [Header("References")]
     [SerializeField] private GameObject playerCamera;
+    [SerializeField] private Transform playerBody;
     public InputActionReference mouse;
-    [SerializeField] float sensitivity = 120f;
-    [SerializeField] Transform playerBody;
 
-    [SerializeField] float xClampMin = -90f;
-    [SerializeField] float xClampMax = 90f;
+    [Header("Settings")]
+    [SerializeField] private float sensitivity = 120f;
+    [SerializeField] private float xClampMin = -90f;
+    [SerializeField] private float xClampMax = 90f;
 
-    float xRotation;
-    float yRotation;
+    private float xRotation;
+    private float yRotation;
 
     void OnEnable()
     {
-        mouse.action.Enable();
+        if (mouse != null)
+            mouse.action.Enable();
     }
 
     void OnDisable()
     {
-        mouse.action.Disable();
+        if (mouse != null)
+            mouse.action.Disable();
     }
 
     public override void OnStartLocalPlayer()
     {
-        playerCamera.SetActive(true);
+        if (playerCamera != null)
+            playerCamera.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Start()
     {
         if (!isLocalPlayer)
         {
-            playerCamera.SetActive(false);
-        }
-        if (playerBody == null)
-        {
-            playerBody = transform.parent;
+            if (playerCamera != null)
+                playerCamera.SetActive(false);
+
+            return;
         }
 
-        // Initialize from current scene rotation to avoid snapping on first frame.
+        if (playerBody == null)
+            playerBody = transform.parent;
+
+        // sync initial rotation
         xRotation = transform.localEulerAngles.x;
-        if (xRotation > 180f)
-        {
-            xRotation -= 360f;
-        }
+        if (xRotation > 180f) xRotation -= 360f;
 
         if (playerBody != null)
-        {
             yRotation = playerBody.localEulerAngles.y;
-        }
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     void LateUpdate()
     {
+        if (!isLocalPlayer) return;
+        if (mouse == null) return;
+
         LookAround();
     }
 
     void LookAround()
     {
-        if (Cursor.lockState != CursorLockMode.Locked)
-        {
-            return;
-        }
-
         Vector2 look = mouse.action.ReadValue<Vector2>();
 
         float mouseX = look.x * sensitivity * Time.deltaTime;
@@ -77,15 +77,13 @@ public class CameraRotation : NetworkBehaviour
         yRotation += mouseX;
         xRotation -= mouseY;
 
-
         xRotation = Mathf.Clamp(xRotation, xClampMin, xClampMax);
 
+        // camera pitch
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
+        // player yaw
         if (playerBody != null)
-        {
             playerBody.localRotation = Quaternion.Euler(0f, yRotation, 0f);
-        }
     }
-
 }
