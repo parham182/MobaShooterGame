@@ -1,9 +1,7 @@
 using Mirror;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class Player : NetworkBehaviour
+public class Player : NetworkBehaviour, IDamageable
 {
     public float maxHealth = 100;
     public float baseArmor = 10;
@@ -14,18 +12,18 @@ public class Player : NetworkBehaviour
     public float expNeedToLevelUp = 100;
     public float currentExp;
 
+    [SyncVar]
     public float currentHealth;
-
-    [Header("UI")]
-    [SerializeField] Slider slider;
-    [SerializeField] TMP_Text healthText;
-    [SerializeField] TMP_Text healthRegenText;
+    public int playerSide; // 0 = server | 1 = client
+    public bool isInSop;
+    public int coins;
+    public Gun gun;
 
     private float timer;
 
     private void Start()
     {
-        currentHealth = maxHealth;
+        Respawn();
     }
 
     private void Update()
@@ -68,8 +66,6 @@ public class Player : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (!isServer) return;
-
         // calc damage reduction from armor
         float reduction =
             (0.06f * baseArmor) /
@@ -80,13 +76,50 @@ public class Player : NetworkBehaviour
 
         UpdateUI();
         
-        if (currentHealth <= 0) print("Player died");
+        if (currentHealth <= 0)
+        {
+            // TODO: respawn with a delay
+            Respawn();
+        }
     }
 
     private void UpdateUI()
     {
-        slider.value = currentHealth;
-        healthText.text = currentHealth + "/" + maxHealth;
-        healthRegenText.text = healthRegen + "/s";
+        if (!isLocalPlayer) return;
+
+        Healthbar.instance.slider.value = currentHealth;
+        Healthbar.instance.healthText.text = currentHealth + "/" + maxHealth;
+        Healthbar.instance.healthRegenText.text = healthRegen + "/s";
+    }
+
+    private void Respawn()
+    {
+        if (isClient && !isServer)
+        {
+            transform.position = SpawnManager.instance.redTeamSpawnPoint.position;
+            playerSide = 1;
+        } else if (isServer)
+        {
+            transform.position = SpawnManager.instance.blueTeamSpawnPoint.position;
+            playerSide = 0;
+        }
+
+        currentHealth = maxHealth;
+        gun.side = playerSide;
+    }
+
+    public int DamageableSide()
+    {
+        return playerSide;
+    }
+
+    public damageableType GetDamageableType()
+    {
+        return damageableType.Player;
+    }
+
+    public Vector3 GetPosision()
+    {
+        return new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
 }

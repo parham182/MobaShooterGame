@@ -24,7 +24,6 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] AudioClip[] walkClips;
     [SerializeField] Vector2 walkVolumeRange = new Vector2(0.4f, 1f);
 
-
     private CharacterController controller;
     Vector2 moveInput;
     private Vector3 velocity;
