@@ -163,12 +163,22 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   moveSpeed: 5
+  sprintSpeed: 10
+  crouchSpeed: 3
+  crouchSitSpeed: 3
+  gravity: -20
+  standHeight: -1
+  crouchHeight: 1
+  standCameraY: 0.8
+  crouchCameraY: 0.3
   cam: {fileID: 7626802564625140857}
+  cameraHolder: {fileID: 1658553318888773078}
+  sprintButton: {fileID: 5817511774909891204, guid: 0d7a0a94fcf7ab71e9304f0d0d863675, type: 3}
+  crouchButton: {fileID: -8683620716506270106, guid: 0d7a0a94fcf7ab71e9304f0d0d863675, type: 3}
+  walkVolumeChangeInterval: 0.25
   walksound: {fileID: 0}
   walkClips: []
   walkVolumeRange: {x: 0.4, y: 1}
-  walkVolumeChangeInterval: 0.25
-  gravity: -20
   canMove: 1
 --- !u!114 &8862439887252839429
 MonoBehaviour:
@@ -323,7 +333,7 @@ Transform:
   m_GameObject: {fileID: 1413782340658720278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.406, z: 0}
+  m_LocalPosition: {x: 0, y: 0.788, z: 0.555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -379,7 +389,7 @@ Transform:
   m_GameObject: {fileID: 4669118632637780761}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -416,9 +426,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
-  field of view: 60
+  field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
