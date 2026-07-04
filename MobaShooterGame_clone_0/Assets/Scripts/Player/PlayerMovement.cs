@@ -4,22 +4,48 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    [Header("System")]
     [SerializeField] float moveSpeed = 5f;
+    [SerializeField] float sprintSpeed = 10f;
+    [SerializeField] float crouchSpeed = 3f;
+    [SerializeField] float crouchSitSpeed = 3f;
+    [SerializeField] float gravity = -20f;
+    [SerializeField] float standHeight = 2f;
+    [SerializeField] float crouchHeight = 1f;
+    [SerializeField] float standCameraY = 0.8f;
+    [SerializeField] float crouchCameraY = 0.3f;
     [SerializeField] Transform cam;
+    [SerializeField] Transform cameraHolder;
+    [SerializeField] InputActionReference sprintButton;
+    [SerializeField] InputActionReference crouchButton;
+    [Header("Sound")]
+    [SerializeField] float walkVolumeChangeInterval = 0.25f;
     [SerializeField] AudioSource walksound;
     [SerializeField] AudioClip[] walkClips;
     [SerializeField] Vector2 walkVolumeRange = new Vector2(0.4f, 1f);
-    [SerializeField] float walkVolumeChangeInterval = 0.25f;
-    [SerializeField] float gravity = -20f;
-    private CharacterController controller;
 
+
+    private CharacterController controller;
     Vector2 moveInput;
     private Vector3 velocity;
 
     public bool canMove = true;
     public bool IsMoving { get; private set; }
     bool wasMoving;
+    bool isCrouch;
     float nextWalkVolumeTime;
+    float normalMoveSpeed;
+
+    void OnEnable()
+    {
+        sprintButton.action.Enable();
+        crouchButton.action.Enable();
+    }
+    void OnDisable()
+    {
+        sprintButton.action.Disable();
+        crouchButton.action.Disable();
+    }
 
     void Start()
     {
@@ -28,6 +54,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             walksound.loop = true;
         }
+        normalMoveSpeed = moveSpeed;
     }
 
     private void OnMove(InputValue value)
@@ -35,12 +62,38 @@ public class PlayerMovement : NetworkBehaviour
         moveInput = value.Get<Vector2>();
     }
 
+
     void Update()
     {
-        if(!isLocalPlayer) return;
-        
+        if (!isLocalPlayer) return;
+
         playerMove();
+        PlayerCrouch();
+        walksoundEffect();
+    }
+
+    private void PlayerCrouch()
+    {
+        if (crouchButton.action.IsPressed()) { isCrouch = true; }
+        else { isCrouch = false; }
+
+        float targetHeight = isCrouch ? crouchHeight : standHeight;
+        controller.height = Mathf.Lerp(controller.height, targetHeight, crouchSitSpeed * Time.deltaTime);
+
+        controller.center = new Vector3(0, controller.height / 2f, 0);
+
+        float targetCamY = isCrouch ? crouchCameraY : standCameraY;
+
+        Vector3 pos = cameraHolder.localPosition;
+        pos.y = Mathf.Lerp(pos.y, targetCamY, crouchSitSpeed * Time.deltaTime);
+        cameraHolder.localPosition = pos;
+    }
+
+    private void walksoundEffect()
+    {
         IsMoving = moveInput.sqrMagnitude > 0.001f;
+
+
         if (walksound != null)
         {
             if (IsMoving && !wasMoving)
@@ -74,11 +127,16 @@ public class PlayerMovement : NetworkBehaviour
     private void playerMove()
     {
         if (!canMove) return;
-        
+
         Vector3 camForward = Quaternion.Euler(0, cam.eulerAngles.y, 0) * Vector3.forward;
         Vector3 camRight = Quaternion.Euler(0, cam.eulerAngles.y, 0) * Vector3.right;
 
         Vector3 moveDir = camRight * moveInput.x + camForward * moveInput.y;
+
+        if (sprintButton.action.IsPressed() && !isCrouch) { moveSpeed = sprintSpeed; }
+        else if (isCrouch) { moveSpeed = crouchSpeed; }
+        else { moveSpeed = normalMoveSpeed; }
+
 
         controller.Move(moveDir * moveSpeed * Time.deltaTime);
 
@@ -86,6 +144,8 @@ public class PlayerMovement : NetworkBehaviour
         Vector3 finalMove = velocity * Time.deltaTime;
         controller.Move(finalMove);
     }
+
+
 
     void SetRandomWalkVolume()
     {
@@ -100,5 +160,5 @@ public class PlayerMovement : NetworkBehaviour
         walksound.volume = Random.Range(min, max);
     }
 
-    
+
 }
