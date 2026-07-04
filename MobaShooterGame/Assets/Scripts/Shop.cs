@@ -3,21 +3,24 @@ using UnityEngine;
 public class Shop : MonoBehaviour
 {
     public int shopSide;
+    public bool playerIsInShop;
 
-    private void OnTriggerEnter(Collider collider) {
+    private void OnTriggerEnter(Collider collider)
+    {
         if (collider.TryGetComponent(out Player player))
         {
             if (player.playerSide == shopSide)
             {
-                player.isInSop = true;
+                playerIsInShop = true;
             }
         }
     }
 
-    private void OnTriggerExit(Collider collider) {
+    private void OnTriggerExit(Collider collider)
+    {
         if (collider.TryGetComponent(out Player player))
         {
-            player.isInSop = false;
+            playerIsInShop = false;
         }
     }
 }

@@ -1,12 +1,15 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Player : NetworkBehaviour, IDamageable
 {
     public float maxHealth = 100;
     public float baseArmor = 10;
-    public float healthRegen = 1;
-
+    public float underTowerArmor = 15f;
+    public float baseHealthRegen = 1;
+    public float healthRegen;
+    public float buffHealthRegen = 10f;
     public int level = 1;
 
     public float expNeedToLevelUp = 100;
@@ -21,8 +24,13 @@ public class Player : NetworkBehaviour, IDamageable
 
     private float timer;
 
+    Tower tower;
+    Shop shop;
+
     private void Start()
     {
+        shop = FindFirstObjectByType<Shop>();
+        tower = FindFirstObjectByType<Tower>();
         Respawn();
     }
 
@@ -30,14 +38,22 @@ public class Player : NetworkBehaviour, IDamageable
     {
         // health regen
         if (currentHealth < maxHealth) timer += Time.deltaTime;
+
+        if (shop.playerIsInShop) healthRegen = buffHealthRegen;
+        
+        else if(!shop.playerIsInShop) healthRegen = baseHealthRegen;
+        
         if (timer >= 1)
         {
             timer = 0;
+
             currentHealth += healthRegen;
+
             if (currentHealth > maxHealth) currentHealth = maxHealth;
 
             UpdateUI();
         }
+
     }
 
     public void GetExp(float exp)
@@ -67,15 +83,27 @@ public class Player : NetworkBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         // calc damage reduction from armor
-        float reduction =
-            (0.06f * baseArmor) /
-            (1 + 0.06f * Mathf.Abs(baseArmor));
-        float multiplier = 1 - reduction;
-        float finalDamage = damage * multiplier;
-        currentHealth -= finalDamage;
+        if (!tower.isTeamPlayerUnderTower)
+        {
+            float reduction =
+                (0.06f * baseArmor) /
+                (1 + 0.06f * Mathf.Abs(baseArmor));
+            float multiplier = 1 - reduction;
+            float finalDamage = damage * multiplier;
+            currentHealth -= finalDamage;
+        }
+        else if (tower.isTeamPlayerUnderTower)
+        {
+            float reduction =
+    (0.06f * underTowerArmor) /
+    (1 + 0.06f * Mathf.Abs(underTowerArmor));
+            float multiplier = 1 - reduction;
+            float finalDamage = damage * multiplier;
+            currentHealth -= finalDamage;
+        }
 
         UpdateUI();
-        
+
         if (currentHealth <= 0)
         {
             // TODO: respawn with a delay
@@ -98,7 +126,8 @@ public class Player : NetworkBehaviour, IDamageable
         {
             GetComponent<NetworkTransformReliable>().CmdTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
             playerSide = 1;
-        } else if (isServer)
+        }
+        else if (isServer)
         {
             GetComponent<NetworkTransformReliable>().CmdTeleport(SpawnManager.instance.blueTeamSpawnPoint.position);
             playerSide = 0;

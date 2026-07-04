@@ -16,6 +16,7 @@ public class Tower : NetworkBehaviour, IDamageable
 
     [SyncVar]
     public float health = 100;
+    public bool isTeamPlayerUnderTower;
 
     private void Update()
     {
@@ -105,8 +106,14 @@ public class Tower : NetworkBehaviour, IDamageable
             if (damageable.DamageableSide() != towerSide)
             {
                 targetsInRange.Add(damageable);
+                isTeamPlayerUnderTower = false;
+            }
+            else
+            {
+                isTeamPlayerUnderTower = true;
             }
         }
+
     }
 
     private void OnTriggerExit(Collider other) {
