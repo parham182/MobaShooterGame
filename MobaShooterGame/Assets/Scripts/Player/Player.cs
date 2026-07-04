@@ -96,11 +96,11 @@ public class Player : NetworkBehaviour, IDamageable
     {
         if (isClient && !isServer)
         {
-            transform.position = SpawnManager.instance.redTeamSpawnPoint.position;
+            GetComponent<NetworkTransformReliable>().CmdTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
             playerSide = 1;
         } else if (isServer)
         {
-            transform.position = SpawnManager.instance.blueTeamSpawnPoint.position;
+            GetComponent<NetworkTransformReliable>().CmdTeleport(SpawnManager.instance.blueTeamSpawnPoint.position);
             playerSide = 0;
         }
 
