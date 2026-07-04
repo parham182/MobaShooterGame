@@ -25,13 +25,13 @@ public class SpawnManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        GameObject towerBlue = Instantiate(towerPrefab, blueTeamTowerSpawnPoint.position, Quaternion.identity);
-        GameObject towerRed = Instantiate(towerPrefab, redTeamTowerSpawnPoint.position, Quaternion.identity);
+        // GameObject towerBlue = Instantiate(towerPrefab, blueTeamTowerSpawnPoint.position, Quaternion.identity);
+        // GameObject towerRed = Instantiate(towerPrefab, redTeamTowerSpawnPoint.position, Quaternion.identity);
 
-        towerBlue.GetComponent<Tower>().towerSide = 0;
-        towerRed.GetComponent<Tower>().towerSide = 1;
+        // towerBlue.GetComponent<Tower>().towerSide = 0;
+        // towerRed.GetComponent<Tower>().towerSide = 1;
 
-        NetworkServer.Spawn(towerBlue);
-        NetworkServer.Spawn(towerRed);
+        // NetworkServer.Spawn(towerBlue);
+        // NetworkServer.Spawn(towerRed);
     }
 }

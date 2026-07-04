@@ -7,6 +7,7 @@ public class Tower : NetworkBehaviour, IDamageable
     [SerializeField] float attackInterval;
     [SerializeField] float damage;
     [SerializeField] float playerDamageMultiplier;
+    [SerializeField] float noCreepDamageReduction;
     [SerializeField] GameObject TowerGun;
     [SerializeField] Transform attackPoint;
     public int towerSide;
@@ -77,7 +78,19 @@ public class Tower : NetworkBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
+        bool isCreenInRange = false;
+        foreach(IDamageable target in targetsInRange)
+        {
+            if (target.GetDamageableType() == damageableType.Creen)
+            {
+                isCreenInRange = true;
+                break;
+            }
+        }
+
+        float finalDamage = isCreenInRange ? damage : damage * noCreepDamageReduction;
+        health -= finalDamage;
+        
         if (health <= 0) Destroy(gameObject);
     }
 
