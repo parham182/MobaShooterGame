@@ -40,7 +40,7 @@ public class Player : NetworkBehaviour, IDamageable
         if (currentHealth < maxHealth) timer += Time.deltaTime;
 
         if (shop.playerIsInShop) healthRegen = buffHealthRegen;
-        
+
         else if(!shop.playerIsInShop) healthRegen = baseHealthRegen;
         
         if (timer >= 1)
@@ -50,7 +50,7 @@ public class Player : NetworkBehaviour, IDamageable
             currentHealth += healthRegen;
 
             if (currentHealth > maxHealth) currentHealth = maxHealth;
-
+            
             UpdateUI();
         }
 

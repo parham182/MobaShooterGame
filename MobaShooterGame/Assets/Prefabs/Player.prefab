@@ -59,7 +59,10 @@ MonoBehaviour:
   syncInterval: 0
   maxHealth: 100
   baseArmor: 10
+  underTowerArmor: 15
+  baseHealthRegen: 1
   healthRegen: 1
+  buffHealthRegen: 10
   level: 1
   expNeedToLevelUp: 100
   currentExp: 0
