@@ -79,9 +79,9 @@ public class Gun : NetworkBehaviour
             {
                 if (damageable.GetDamageableType() == damageableType.Building)
                 {
-                    if (damageable.DamageableSide() != side) damageable.TakeDamage(damage);
+                    if (damageable.DamageableSide() != side) damageable.TakeDamage(damage, damageableType.Player, side);
                 }
-                else damageable.TakeDamage(damage);
+                else damageable.TakeDamage(damage, damageableType.Player, side);
             }
 
             // Instantiate(Test, hit.point, Quaternion.identity);

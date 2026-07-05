@@ -25,7 +25,7 @@ public class Player : NetworkBehaviour, IDamageable
     }
 
     [Server]
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, damageableType attackerType, string attackerSide)
     {
         currentHealth -= damage;
 

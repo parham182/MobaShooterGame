@@ -74,7 +74,7 @@ public class Tower : NetworkBehaviour, IDamageable
                             ? damage * playerDamageMultiplier
                             : damage;
                         
-                        dmg.TakeDamage(finalDamage);
+                        dmg.TakeDamage(finalDamage, damageableType.Building, towerSide);
                     }
                 }
             }
@@ -84,7 +84,7 @@ public class Tower : NetworkBehaviour, IDamageable
     // ---------------- DAMAGE ----------------
 
     [Server]
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, damageableType attackerType, string attackerSide)
     {
         bool hasCreep = false;
 

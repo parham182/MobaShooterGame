@@ -309,10 +309,10 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  attackInterval: 1
-  attackRange: 15
-  damage: 10
-  playerDamageMultiplier: 1.5
+  attackInterval: 0.6
+  attackRange: 20
+  damage: 5
+  playerDamageMultiplier: 2
   noCreepDamageReduction: 0.05
   TowerGun: {fileID: 4151917954730301844}
   attackPoint: {fileID: 8790108240060708356}

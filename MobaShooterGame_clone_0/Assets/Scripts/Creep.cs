@@ -10,6 +10,7 @@ public class Creep : NetworkBehaviour, IDamageable
     public float health;
 
     [Header("Creep Stats")]
+    [SerializeField] private int bountyGold;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackInterval;
     [SerializeField] private float damage;
@@ -63,7 +64,7 @@ public class Creep : NetworkBehaviour, IDamageable
                                 ? damage * towerDamageMultiplier
                                 : damage;
 
-                            dmg.TakeDamage(finalDamage);
+                            dmg.TakeDamage(finalDamage, damageableType.Creep, creepSide);
                         }
                     }
                 }
@@ -92,12 +93,16 @@ public class Creep : NetworkBehaviour, IDamageable
     }
 
     [Server]
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, damageableType attackerType, string attackerSide)
     {
-        print("got damage " + damage);
         health -= damage;
         if (health <= 0)
         {
+            if (attackerType == damageableType.Player && attackerSide != creepSide)
+            {
+                CurrencyManager.instance.AddGold(bountyGold, attackerSide);
+                print(attackerSide);
+            }
             health = 0;
             SpawnManager.instance.RemoveDamageable(this);
             NetworkServer.Destroy(gameObject);
