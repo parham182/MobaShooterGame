@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7954049710713605034}
   - component: {fileID: 4501364165939649633}
   - component: {fileID: 7975438426219318234}
+  - component: {fileID: 8917422754719803259}
   m_Layer: 2
   m_Name: Shop 0
   m_TagString: Untagged
@@ -68,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 1282440c951373f72b37195b0e7b9061, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,4 +126,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a23de9c6ce94d2546b1f32ddff3ce06e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shop
-  shopSide: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  hpRegBuff: 14
+  shopSide: red
+--- !u!114 &8917422754719803259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6043559653230265247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 4282714584
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0

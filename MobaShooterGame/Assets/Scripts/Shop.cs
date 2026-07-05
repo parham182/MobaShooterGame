@@ -1,26 +1,36 @@
+using Mirror;
 using UnityEngine;
 
-public class Shop : MonoBehaviour
+public class Shop : NetworkBehaviour
 {
-    public int shopSide;
-    public bool playerIsInShop;
+    public float hpRegBuff = 10;
+    public string shopSide;
 
-    private void OnTriggerEnter(Collider collider)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collider.TryGetComponent(out Player player))
+        if (!isServer) return;
+
+        if (other.TryGetComponent(out Player player))
         {
             if (player.playerSide == shopSide)
             {
-                playerIsInShop = true;
+                // player.isInShop = true;
+                // player.AddRegenBuff(hpRegBuff);
             }
         }
     }
 
-    private void OnTriggerExit(Collider collider)
+    private void OnTriggerExit(Collider other)
     {
-        if (collider.TryGetComponent(out Player player))
+        if (!isServer) return;
+
+        if (other.TryGetComponent(out Player player))
         {
-            playerIsInShop = false;
+            if (player.playerSide == shopSide)
+            {
+                // player.isInShop = false;
+                // player.RemoveRegenBuff(hpRegBuff);
+            }
         }
     }
 }

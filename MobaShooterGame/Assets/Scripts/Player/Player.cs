@@ -1,154 +1,76 @@
 using Mirror;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Player : NetworkBehaviour, IDamageable
 {
     public float maxHealth = 100;
-    public float baseArmor = 10;
-    public float underTowerArmor = 15f;
-    public float baseHealthRegen = 1;
-    public float healthRegen;
-    public float buffHealthRegen = 10f;
-    public int level = 1;
 
-    public float expNeedToLevelUp = 100;
-    public float currentExp;
-
-    [SyncVar]
+    [SyncVar(hook = nameof(OnHealthChanged))]
     public float currentHealth;
-    public int playerSide; // 0 = server | 1 = client
-    public bool isInSop;
-    public int coins;
+
+    [SyncVar(hook = nameof(OnSideChanged))]
+    public string playerSide;
+
     public Gun gun;
 
-    private float timer;
-
-    Tower tower;
-    Shop shop;
-
-    private void Start()
+    public override void OnStartServer()
     {
-        shop = FindFirstObjectByType<Shop>();
-        tower = FindFirstObjectByType<Tower>();
-        Respawn();
+        currentHealth = maxHealth;
     }
 
-    private void Update()
+    public override void OnStartClient()
     {
-        // health regen
-        if (currentHealth < maxHealth) timer += Time.deltaTime;
-
-        if (shop.playerIsInShop) healthRegen = buffHealthRegen;
-
-        else if(!shop.playerIsInShop) healthRegen = baseHealthRegen;
-        
-        if (timer >= 1)
-        {
-            timer = 0;
-
-            currentHealth += healthRegen;
-
-            if (currentHealth > maxHealth) currentHealth = maxHealth;
-            
-            UpdateUI();
-        }
-
+        if (gun != null)
+            gun.side = playerSide;
     }
 
-    public void GetExp(float exp)
-    {
-        currentExp += exp;
-
-        while (currentExp >= expNeedToLevelUp)
-        {
-            currentExp -= expNeedToLevelUp;
-            LevelUp();
-        }
-    }
-
-    void LevelUp()
-    {
-        level++;
-
-        maxHealth += 20;
-        baseArmor += 2;
-        healthRegen += 1;
-
-        expNeedToLevelUp *= 1.1f;
-
-        UpdateUI();
-    }
-
+    [Server]
     public void TakeDamage(float damage)
     {
-        // calc damage reduction from armor
-        if (!tower.isTeamPlayerUnderTower)
-        {
-            float reduction =
-                (0.06f * baseArmor) /
-                (1 + 0.06f * Mathf.Abs(baseArmor));
-            float multiplier = 1 - reduction;
-            float finalDamage = damage * multiplier;
-            currentHealth -= finalDamage;
-        }
-        else if (tower.isTeamPlayerUnderTower)
-        {
-            float reduction =
-    (0.06f * underTowerArmor) /
-    (1 + 0.06f * Mathf.Abs(underTowerArmor));
-            float multiplier = 1 - reduction;
-            float finalDamage = damage * multiplier;
-            currentHealth -= finalDamage;
-        }
-
-        UpdateUI();
+        currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
-            // TODO: respawn with a delay
+            currentHealth = 0;
             Respawn();
         }
     }
 
-    private void UpdateUI()
+    [Server]
+    public void Respawn()
+    {
+        // transform.position = playerSide == "red"
+        //     ? SpawnManager.instance.redTeamSpawnPoint.position
+        //     : SpawnManager.instance.blueTeamSpawnPoint.position;
+
+        if (playerSide == "red") 
+            GetComponent<NetworkTransformReliable>()
+            .RpcTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
+        else
+            GetComponent<NetworkTransformReliable>()
+            .RpcTeleport(SpawnManager.instance.blueTeamSpawnPoint.position);
+
+        currentHealth = maxHealth;
+    }
+
+    void OnHealthChanged(float oldValue, float newValue)
     {
         if (!isLocalPlayer) return;
 
-        Healthbar.instance.slider.value = currentHealth;
-        Healthbar.instance.healthText.text = currentHealth + "/" + maxHealth;
-        Healthbar.instance.healthRegenText.text = healthRegen + "/s";
+        Healthbar.instance.slider.maxValue = maxHealth;
+        Healthbar.instance.slider.value = newValue;
+        Healthbar.instance.healthText.text = $"{newValue}/{maxHealth}";
     }
 
-    private void Respawn()
+    void OnSideChanged(string oldValue, string newValue)
     {
-        if (isClient && !isServer)
-        {
-            GetComponent<NetworkTransformReliable>().CmdTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
-            playerSide = 1;
-        }
-        else if (isServer)
-        {
-            GetComponent<NetworkTransformReliable>().CmdTeleport(SpawnManager.instance.blueTeamSpawnPoint.position);
-            playerSide = 0;
-        }
-
-        currentHealth = maxHealth;
-        gun.side = playerSide;
+        if (gun != null)
+            gun.side = newValue;
     }
 
-    public int DamageableSide()
-    {
-        return playerSide;
-    }
+    public string DamageableSide() => playerSide;
 
-    public damageableType GetDamageableType()
-    {
-        return damageableType.Player;
-    }
+    public damageableType GetDamageableType() => damageableType.Player;
 
-    public Vector3 GetPosision()
-    {
-        return new Vector3(transform.position.x, transform.position.y, transform.position.z);
-    }
+    public Vector3 GetPosision() => transform.position;
 }

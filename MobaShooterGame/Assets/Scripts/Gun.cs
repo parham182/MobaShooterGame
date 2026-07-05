@@ -1,5 +1,5 @@
+using System.Collections;
 using Mirror;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,11 +8,11 @@ public class Gun : NetworkBehaviour
     [SerializeField] LayerMask impactlayer;
     public float damage = 10f;
     public float range = 100f;
-    public int side = 0;
+    public string side;
 
     [Header("effects")]
     public GameObject firePoint;
-    public ParticleSystem muzzleFlash;
+    public GameObject muzzleFlash;
     public GameObject ImpactEffect;
     public GameObject bloodImpactEffect;
 
@@ -31,12 +31,10 @@ public class Gun : NetworkBehaviour
     private void Fire(InputAction.CallbackContext value)
     {
         if (!isLocalPlayer) return;
-        print("Shoot");
 
-        Instantiate(muzzleFlash,firePoint.transform.position, quaternion.identity, firePoint.transform);
+        SpawnEffect(muzzleFlash, firePoint.transform.position, Quaternion.identity, firePoint.transform);
 
         CmdShoot(Camera.main.transform.position, Camera.main.transform.forward);
-
     }
 
     [Command]
@@ -53,10 +51,31 @@ public class Gun : NetworkBehaviour
                 } else damageable.TakeDamage(damage);
             }
 
-        Instantiate(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-
-            // GameObject impactObject = Instantiate(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-            // Destroy(impactObject, 2f);
+            SpawnEffect(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
         }
+    }
+
+    [Server]
+    private void SpawnEffect(GameObject effectObject, Vector3 position, Quaternion rotation)
+    {
+        // GameObject impactObject = Instantiate(effectObject, position, rotation);
+        // NetworkServer.Spawn(impactObject);
+        // StartCoroutine(DespawnAfter(impactObject, 2f));
+    }
+
+    [Server]
+    private void SpawnEffect(GameObject effectObject, Vector3 position, Quaternion rotation, Transform parent)
+    {
+        // GameObject impactObject = Instantiate(effectObject, position, rotation, parent);
+        // NetworkServer.Spawn(impactObject);
+        // StartCoroutine(DespawnAfter(impactObject, 2f));
+    }
+
+    IEnumerator DespawnAfter(GameObject obj, float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        NetworkServer.UnSpawn(obj);
+        Destroy(obj);
     }
 }

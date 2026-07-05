@@ -4,7 +4,7 @@ public interface IDamageable
 {
     public void TakeDamage(float damage);
 
-    public int DamageableSide();
+    public string DamageableSide();
 
     public damageableType GetDamageableType();
 
@@ -14,6 +14,6 @@ public interface IDamageable
 public enum damageableType
 {
     Player,
-    Creen,
+    Creep,
     Building
 }

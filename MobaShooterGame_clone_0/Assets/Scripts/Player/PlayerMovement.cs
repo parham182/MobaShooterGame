@@ -44,6 +44,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         sprintButton.action.Disable();
         crouchButton.action.Disable();
+        
     }
 
     void Start()
@@ -70,6 +71,7 @@ public class PlayerMovement : NetworkBehaviour
         PlayerCrouch();
         walksoundEffect();
     }
+
 
     private void PlayerCrouch()
     {

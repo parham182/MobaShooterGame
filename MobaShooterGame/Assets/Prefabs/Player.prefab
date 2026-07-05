@@ -58,17 +58,16 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   maxHealth: 100
-  baseArmor: 10
-  underTowerArmor: 15
-  baseHealthRegen: 1
-  healthRegen: 1
+  buffArmor: 0
   buffHealthRegen: 10
   level: 1
   expNeedToLevelUp: 100
   currentExp: 0
   currentHealth: 0
   playerSide: 0
-  isInSop: 0
+  armor: 0
+  healthRegen: 0
+  isInShop: 0
   coins: 0
   gun: {fileID: 3880345382308086939}
 --- !u!33 &7834614608429453336

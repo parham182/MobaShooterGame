@@ -8,114 +8,146 @@ public class Tower : NetworkBehaviour, IDamageable
     [SerializeField] float damage;
     [SerializeField] float playerDamageMultiplier;
     [SerializeField] float noCreepDamageReduction;
+
     [SerializeField] GameObject TowerGun;
     [SerializeField] Transform attackPoint;
-    public int towerSide;
-    private List<IDamageable> targetsInRange = new List<IDamageable>();
+    [SerializeField] float armorBuff = 5f;
+
+    public string towerSide;
+
+    private readonly List<IDamageable> targetsInRange = new();
     private float timer;
 
     [SyncVar]
     public float health = 100;
 
+    public override void OnStartServer()
+    {
+        health = 100;
+        SpawnManager.instance.AddDamageable(this);
+    }
+
+    [ServerCallback]
     private void Update()
     {
-        if (!isServer) return;
-
         timer += Time.deltaTime;
 
-        if (targetsInRange.Count > 0)
+        if (targetsInRange.Count == 0)
+            return;
+
+        IDamageable closest = null;
+        float bestDist = float.MaxValue;
+
+        foreach (var t in targetsInRange)
         {
-            float closestTargetDistance = float.MaxValue;
-            IDamageable closestTarget = null;
+            if (t == null) continue;
 
-            foreach(IDamageable target in targetsInRange)
+            float d = Vector3.Distance(transform.position, t.GetPosision());
+            if (d < bestDist)
             {
-                float distance = Vector3.Distance(transform.position, target.GetPosision());
-                if (distance < closestTargetDistance)
-                {
-                    closestTargetDistance = distance;
-                    closestTarget = target;
-                }
+                bestDist = d;
+                closest = t;
             }
+        }
 
-            // look at target
-            Vector3 lookDir = TowerGun.transform.position - closestTarget.GetPosision();
-            float angle = Mathf.Atan2(lookDir.x, lookDir.z) * Mathf.Rad2Deg - 90f;
-            TowerGun.transform.rotation = Quaternion.Euler(0f, angle, 0f);
+        if (closest == null)
+            return;
 
-            Vector3 direction = (closestTarget.GetPosision() - TowerGun.transform.position).normalized;
+        Vector3 dir = (closest.GetPosision() - attackPoint.position).normalized;
 
-            Debug.DrawRay(attackPoint.position, direction * 100f, Color.red);
+        TowerGun.transform.rotation = Quaternion.LookRotation(dir);
 
-            if (timer >= attackInterval)
+        if (timer < attackInterval)
+            return;
+
+        timer = 0f;
+
+        if (Physics.Raycast(attackPoint.position, dir, out RaycastHit hit))
+        {
+            if (hit.collider.TryGetComponent(out IDamageable dmg))
             {
-                // attack
-                // muzzleFlash.Play()
-                timer = 0;
+                float finalDamage =
+                    dmg.GetDamageableType() == damageableType.Player
+                    ? damage * playerDamageMultiplier
+                    : damage;
 
-                RaycastHit hit;
-                if (Physics.Raycast(attackPoint.position, direction, out hit))
-                {
-                    if (hit.collider.TryGetComponent(out IDamageable damageable))
-                    {
-                        if (damageable.GetDamageableType() == damageableType.Player)
-                        {
-                            damageable.TakeDamage(damage * playerDamageMultiplier);
-                        } else damageable.TakeDamage(damage);
-                    }
-
-                    // GameObject impactObject = Instantiate(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                    // Destroy(impactObject, 2f);
-                }
+                dmg.TakeDamage(finalDamage);
             }
         }
     }
 
-    public int DamageableSide()
-    {
-        return towerSide;
-    }
+    // ---------------- DAMAGE ----------------
 
+    [Server]
     public void TakeDamage(float damage)
     {
-        bool isCreenInRange = false;
-        foreach(IDamageable target in targetsInRange)
+        bool hasCreep = false;
+
+        foreach (var t in targetsInRange)
         {
-            if (target.GetDamageableType() == damageableType.Creen)
+            if (t != null && t.GetDamageableType() == damageableType.Creep)
             {
-                isCreenInRange = true;
+                hasCreep = true;
                 break;
             }
         }
 
-        float finalDamage = isCreenInRange ? damage : damage * noCreepDamageReduction;
+        float finalDamage = hasCreep ? damage : damage * noCreepDamageReduction;
+
         health -= finalDamage;
-        
-        if (health <= 0) Destroy(gameObject);
-    }
 
-    public damageableType GetDamageableType()
-    {
-        return damageableType.Building;
-    }
-
-    private void OnTriggerEnter(Collider other) {
-        if (other.TryGetComponent(out IDamageable damageable))
+        if (health <= 0)
         {
-            if (damageable.DamageableSide() != towerSide)
+            NetworkServer.Destroy(gameObject);
+        }
+    }
+
+    // ---------------- TRIGGERS ----------------
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isServer) return;
+
+        if (other.TryGetComponent(out IDamageable dmg))
+        {
+            if (dmg.DamageableSide() != towerSide)
             {
-                targetsInRange.Add(damageable);
+                targetsInRange.Add(dmg);
+            }
+        }
+
+        if (other.TryGetComponent(out Player player))
+        {
+            if (player.playerSide == towerSide)
+            {
+                // player.AddArmorBuff(armorBuff);
             }
         }
     }
 
-    private void OnTriggerExit(Collider other) {
-        if (other.TryGetComponent(out IDamageable damageable))
-            targetsInRange.Remove(damageable);
+    private void OnTriggerExit(Collider other)
+    {
+        if (!isServer) return;
+
+        if (other.TryGetComponent(out IDamageable dmg))
+        {
+            targetsInRange.Remove(dmg);
+        }
+
+        if (other.TryGetComponent(out Player player))
+        {
+            if (player.playerSide == towerSide)
+            {
+                // player.RemoveArmorBuff(armorBuff);
+            }
+        }
     }
 
-    public Vector3 GetPosision()
-    {
-        return new Vector3(transform.position.x, transform.position.y, transform.position.z);
-    }
+    // ---------------- INTERFACE ----------------
+
+    public string DamageableSide() => towerSide;
+
+    public damageableType GetDamageableType() => damageableType.Building;
+
+    public Vector3 GetPosision() => transform.position;
 }

@@ -247,7 +247,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &214088105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,7 +819,7 @@ GameObject:
   m_Component:
   - component: {fileID: 734748729}
   m_Layer: 0
-  m_Name: RedTowerSpawnPoint
+  m_Name: RedCreepSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -834,7 +834,7 @@ Transform:
   m_GameObject: {fileID: 734748728}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: -20}
+  m_LocalPosition: {x: 0, y: 2, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -929,9 +929,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 998137306}
-  - component: {fileID: 998137305}
-  - component: {fileID: 998137304}
   - component: {fileID: 998137303}
+  - component: {fileID: 998137308}
+  - component: {fileID: 998137307}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -968,7 +968,22 @@ MonoBehaviour:
   debugLog: 0
   statisticsGUI: 0
   statisticsLog: 0
---- !u!114 &998137304
+--- !u!4 &998137306
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998137302}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1412969089}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &998137307
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -982,7 +997,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Mirror::Mirror.NetworkManagerHUD
   offsetX: 0
   offsetY: 0
---- !u!114 &998137305
+--- !u!114 &998137308
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -991,9 +1006,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 998137302}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
+  m_Script: {fileID: 11500000, guid: 73be053b74e71a84092d287ab7c46d5b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mirror::Mirror.NetworkManager
+  m_EditorClassIdentifier: Assembly-CSharp::MyNetworkManager
   dontDestroyOnLoad: 1
   runInBackground: 1
   headlessStartMode: 0
@@ -1011,7 +1026,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 878019864691474067, guid: 8303c89f751934d4fa2627edd27468df, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 3791798136792295527, guid: e845bd34cd8cfe54685036574f919eb2, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -1027,21 +1043,6 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
---- !u!4 &998137306
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 998137302}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1412969089}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1002589617
 GameObject:
   m_ObjectHideFlags: 0
@@ -1167,6 +1168,10 @@ PrefabInstance:
       propertyPath: sceneId
       value: 2459480529
       objectReference: {fileID: 0}
+    - target: {fileID: 1593121269678629027, guid: 85789d7e1c122e24cb0acc7494dc12df, type: 3}
+      propertyPath: towerSide
+      value: blue
+      objectReference: {fileID: 0}
     - target: {fileID: 3591644734628138809, guid: 85789d7e1c122e24cb0acc7494dc12df, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1209,7 +1214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5215981833533993562, guid: 85789d7e1c122e24cb0acc7494dc12df, type: 3}
       propertyPath: m_Name
-      value: Tower
+      value: Tower blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1338,7 +1343,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6043559653230265247, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_Name
-      value: Shop 0 (1)
+      value: Shop blue
       objectReference: {fileID: 0}
     - target: {fileID: 6259338701000108725, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1350,7 +1355,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6259338701000108725, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -45.5
+      value: 45.5
       objectReference: {fileID: 0}
     - target: {fileID: 6259338701000108725, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1383,7 +1388,15 @@ PrefabInstance:
     - target: {fileID: 7954049710713605034, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f55f5a5846da2aef688d7aa17ff80c45, type: 2}
+      objectReference: {fileID: 2100000, guid: 1282440c951373f72b37195b0e7b9061, type: 2}
+    - target: {fileID: 7975438426219318234, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
+      propertyPath: shopSide
+      value: blue
+      objectReference: {fileID: 0}
+    - target: {fileID: 8917422754719803259, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
+      propertyPath: sceneId
+      value: 3584427737
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1515,7 +1528,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1593121269678629027, guid: 85789d7e1c122e24cb0acc7494dc12df, type: 3}
       propertyPath: towerSide
-      value: 1
+      value: red
       objectReference: {fileID: 0}
     - target: {fileID: 3591644734628138809, guid: 85789d7e1c122e24cb0acc7494dc12df, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1559,7 +1572,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5215981833533993562, guid: 85789d7e1c122e24cb0acc7494dc12df, type: 3}
       propertyPath: m_Name
-      value: Tower (1)
+      value: Tower red
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1576,7 +1589,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1397902522}
   m_Layer: 0
-  m_Name: BlueTowerSpawnPoint
+  m_Name: BlueCreepSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1591,7 +1604,7 @@ Transform:
   m_GameObject: {fileID: 1397902521}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 20}
+  m_LocalPosition: {x: 0, y: 2, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1823,11 +1836,9 @@ MonoBehaviour:
   syncInterval: 0
   blueTeamSpawnPoint: {fileID: 760452014}
   redTeamSpawnPoint: {fileID: 278114233}
-  blueTeamTowerSpawnPoint: {fileID: 1397902522}
-  redTeamTowerSpawnPoint: {fileID: 734748729}
-  towerPrefab: {fileID: 5215981833533993562, guid: 85789d7e1c122e24cb0acc7494dc12df, type: 3}
-  blueTeamCreenSpawnPoint: {fileID: 0}
-  redTeamCreenSpawnPoint: {fileID: 0}
+  blueTeamCreepSpawnPoint: {fileID: 1397902522}
+  redTeamCreepSpawnPoint: {fileID: 734748729}
+  creepPrefab: {fileID: 3791798136792295527, guid: e845bd34cd8cfe54685036574f919eb2, type: 3}
 --- !u!114 &2108930223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1855,7 +1866,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6043559653230265247, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_Name
-      value: Shop 0
+      value: Shop red
       objectReference: {fileID: 0}
     - target: {fileID: 6259338701000108725, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1867,7 +1878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6259338701000108725, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 45.5
+      value: -45.5
       objectReference: {fileID: 0}
     - target: {fileID: 6259338701000108725, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1900,7 +1911,15 @@ PrefabInstance:
     - target: {fileID: 7954049710713605034, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 1282440c951373f72b37195b0e7b9061, type: 2}
+      objectReference: {fileID: 2100000, guid: f55f5a5846da2aef688d7aa17ff80c45, type: 2}
+    - target: {fileID: 7975438426219318234, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
+      propertyPath: shopSide
+      value: red
+      objectReference: {fileID: 0}
+    - target: {fileID: 8917422754719803259, guid: 3fe07c4c5ca130e4b904ac8e8c2ded7e, type: 3}
+      propertyPath: sceneId
+      value: 470064254
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
