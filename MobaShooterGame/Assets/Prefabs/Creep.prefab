@@ -115,8 +115,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &-7252455573430014294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,12 +188,10 @@ MonoBehaviour:
   attackRange: 10
   attackInterval: 1
   damage: 5
-  towerDamageMultiplier: 2
+  towerDamageMultiplier: 1
   firePoint: {fileID: 4687268376154702948}
-  moveTargetBlueTeam: {fileID: 7448879240982878261, guid: 2b981af36821534158802eb3326fd887, type: 3}
-  moveTargetRedTeam: {fileID: 1497834374795395134, guid: 25561fc828f7bebb0b5a9a1aea48b0ee, type: 3}
-  moveSpeed: 10
   animator: {fileID: 1322385260483438577}
+  navMeshAgent: {fileID: 2239182872152014268}
 --- !u!195 &2239182872152014268
 NavMeshAgent:
   m_ObjectHideFlags: 0

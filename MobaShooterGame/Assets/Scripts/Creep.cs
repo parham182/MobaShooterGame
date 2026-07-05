@@ -15,28 +15,15 @@ public class Creep : NetworkBehaviour, IDamageable
     [SerializeField] private float damage;
     [SerializeField] private float towerDamageMultiplier;
     [SerializeField] private Transform firePoint;
-
-    [Header("Creep Movement")]
-    [SerializeField] Transform moveTargetBlueTeam;
-    [SerializeField] Transform moveTargetRedTeam;
-    [SerializeField] float moveSpeed = 10f;
     [SerializeField] Animator animator;
-    NavMeshAgent navMeshAgent;
+    [SerializeField] NavMeshAgent navMeshAgent;
 
     private IDamageable target;
     private float timer = 0;
 
-    void Start()
-    {
-        navMeshAgent = GetComponent<NavMeshAgent>();
-
-    }
-
     [ServerCallback]
     private void Update()
     {
-        creepMovement();
-
         timer += Time.deltaTime;
         // find target
         float closestTargetDistance = float.MaxValue;
@@ -60,6 +47,8 @@ public class Creep : NetworkBehaviour, IDamageable
             float distance = Vector3.Distance(transform.position, target.GetPosision());
             if (distance <= attackRange) // attack the target
             {
+                navMeshAgent.isStopped = true;
+
                 if (timer >= attackInterval)
                 {
                     timer = 0;
@@ -75,36 +64,15 @@ public class Creep : NetworkBehaviour, IDamageable
                                 : damage;
 
                             dmg.TakeDamage(finalDamage);
-                            moveSpeed = 0;
                         }
                     }
                 }
             }
             else // go closer (target its not in attack range)
             {
-                moveSpeed = 10;
+                navMeshAgent.SetDestination(target.GetPosision());
+                navMeshAgent.isStopped = false;
             }
-        }
-    }
-
-    private void creepMovement()
-    {
-        navMeshAgent.speed = moveSpeed;
-        if (creepSide == "blue")
-        {
-            navMeshAgent.SetDestination(moveTargetBlueTeam.transform.position);
-        }
-        else if (creepSide == "red")
-        {
-            navMeshAgent.SetDestination(moveTargetRedTeam.transform.position);
-        }
-        if (moveSpeed > 0)
-        {
-            animator.SetBool("isMoving", true);
-        }
-        else
-        {
-            animator.SetBool("isMoving", false);
         }
     }
 
@@ -126,6 +94,7 @@ public class Creep : NetworkBehaviour, IDamageable
     [Server]
     public void TakeDamage(float damage)
     {
+        print("got damage " + damage);
         health -= damage;
         if (health <= 0)
         {

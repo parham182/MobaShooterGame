@@ -1,14 +1,23 @@
 using System.Collections;
 using Mirror;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Gun : NetworkBehaviour
 {
+    [SerializeField] GameObject Test;
+    [SerializeField] float fireRate = 10f; 
+    [SerializeField] float magezineSize = 7f;
+    float nextFireTime;
+    float fullMagezine;
+
+
     [SerializeField] LayerMask impactlayer;
     public float damage = 10f;
     public float range = 100f;
     public string side;
+    float spread = 0.05f;
 
     [Header("effects")]
     public GameObject firePoint;
@@ -18,29 +27,52 @@ public class Gun : NetworkBehaviour
 
     [SerializeField] InputActionReference fireRef;
 
+    bool canShoot;
+
     private void OnEnable()
     {
-        fireRef.action.performed += Fire;
+        fireRef.action.Enable();
     }
 
     private void OnDisable()
     {
-        fireRef.action.performed -= Fire;
+        fireRef.action.Disable();
     }
 
-    private void Fire(InputAction.CallbackContext value)
+    void Start()
+    {
+        fullMagezine = magezineSize;
+    }
+
+    void Update()
+    {
+        if (fireRef.action.IsPressed() && Time.time >= nextFireTime)
+        {
+            nextFireTime = Time.time + (1f / fireRate);
+            Fire();
+
+        }
+    }
+
+    private void Fire()
     {
         if (!isLocalPlayer) return;
 
         SpawnEffect(muzzleFlash, firePoint.transform.position, Quaternion.identity, firePoint.transform);
 
-        CmdShoot(Camera.main.transform.position, Camera.main.transform.forward);
+        Vector3 direction = Camera.main.transform.forward;
+        direction += Camera.main.transform.right * Random.Range(-spread, spread);
+        direction += Camera.main.transform.up * Random.Range(-spread, spread);
+        direction.Normalize();
+
+        CmdShoot(Camera.main.transform.position, direction);
     }
 
     [Command]
     void CmdShoot(Vector3 origin, Vector3 direction)
     {
         RaycastHit hit;
+
         if (Physics.Raycast(origin, direction, out hit, range, impactlayer, QueryTriggerInteraction.Ignore))
         {
             if (hit.collider.TryGetComponent(out IDamageable damageable))
@@ -48,9 +80,11 @@ public class Gun : NetworkBehaviour
                 if (damageable.GetDamageableType() == damageableType.Building)
                 {
                     if (damageable.DamageableSide() != side) damageable.TakeDamage(damage);
-                } else damageable.TakeDamage(damage);
+                }
+                else damageable.TakeDamage(damage);
             }
 
+            // Instantiate(Test, hit.point, Quaternion.identity);
             SpawnEffect(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
         }
     }

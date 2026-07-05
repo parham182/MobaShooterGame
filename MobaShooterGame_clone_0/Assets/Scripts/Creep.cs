@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Creep : NetworkBehaviour, IDamageable
 {
@@ -14,6 +15,8 @@ public class Creep : NetworkBehaviour, IDamageable
     [SerializeField] private float damage;
     [SerializeField] private float towerDamageMultiplier;
     [SerializeField] private Transform firePoint;
+    [SerializeField] Animator animator;
+    [SerializeField] NavMeshAgent navMeshAgent;
 
     private IDamageable target;
     private float timer = 0;
@@ -26,7 +29,7 @@ public class Creep : NetworkBehaviour, IDamageable
         float closestTargetDistance = float.MaxValue;
         target = null;
 
-        foreach(IDamageable t in SpawnManager.instance.targets)
+        foreach (IDamageable t in SpawnManager.instance.targets)
         {
             if (t.DamageableSide() != creepSide)
             {
@@ -44,6 +47,8 @@ public class Creep : NetworkBehaviour, IDamageable
             float distance = Vector3.Distance(transform.position, target.GetPosision());
             if (distance <= attackRange) // attack the target
             {
+                navMeshAgent.isStopped = true;
+
                 if (timer >= attackInterval)
                 {
                     timer = 0;
@@ -62,9 +67,11 @@ public class Creep : NetworkBehaviour, IDamageable
                         }
                     }
                 }
-            } else // go closer (target its not in attack range)
+            }
+            else // go closer (target its not in attack range)
             {
-                
+                navMeshAgent.SetDestination(target.GetPosision());
+                navMeshAgent.isStopped = false;
             }
         }
     }
@@ -87,6 +94,7 @@ public class Creep : NetworkBehaviour, IDamageable
     [Server]
     public void TakeDamage(float damage)
     {
+        print("got damage " + damage);
         health -= damage;
         if (health <= 0)
         {

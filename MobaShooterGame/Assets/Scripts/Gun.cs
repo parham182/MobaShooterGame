@@ -84,7 +84,7 @@ public class Gun : NetworkBehaviour
                 else damageable.TakeDamage(damage);
             }
 
-            Instantiate(Test, hit.point, Quaternion.identity);
+            // Instantiate(Test, hit.point, Quaternion.identity);
             SpawnEffect(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
         }
     }

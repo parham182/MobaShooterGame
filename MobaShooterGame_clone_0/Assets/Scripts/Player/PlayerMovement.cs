@@ -23,6 +23,8 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] AudioSource walksound;
     [SerializeField] AudioClip[] walkClips;
     [SerializeField] Vector2 walkVolumeRange = new Vector2(0.4f, 1f);
+    [Header("Animation")]
+    [SerializeField] Animator animator;
 
     private CharacterController controller;
     Vector2 moveInput;
@@ -134,9 +136,9 @@ public class PlayerMovement : NetworkBehaviour
 
         Vector3 moveDir = camRight * moveInput.x + camForward * moveInput.y;
 
-        if (sprintButton.action.IsPressed() && !isCrouch) { moveSpeed = sprintSpeed; }
-        else if (isCrouch) { moveSpeed = crouchSpeed; }
-        else { moveSpeed = normalMoveSpeed; }
+        if (sprintButton.action.IsPressed() && !isCrouch && IsMoving) { moveSpeed = sprintSpeed; animator.SetBool("isRuning", true); }
+        else if (isCrouch) { moveSpeed = crouchSpeed; animator.SetBool("isRuning", false); }
+        else { moveSpeed = normalMoveSpeed; animator.SetBool("isRuning", false); }
 
 
         controller.Move(moveDir * moveSpeed * Time.deltaTime);
@@ -144,6 +146,7 @@ public class PlayerMovement : NetworkBehaviour
         velocity.y += gravity * Time.deltaTime;
         Vector3 finalMove = velocity * Time.deltaTime;
         controller.Move(finalMove);
+        animator.SetBool("isWalking", IsMoving);
     }
 
 

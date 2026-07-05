@@ -27,20 +27,21 @@ public class SpawnManager : NetworkBehaviour
     public override void OnStartServer()
     {
         InvokeRepeating(nameof(SpawnCreeps), 10f, 30f);
+        
     }
 
     [Server]
     void SpawnCreeps()
     {
         GameObject creepObject = Instantiate(creepPrefab, blueTeamCreepSpawnPoint.position, Quaternion.identity);
-        AddDamageable(creepObject.GetComponent<IDamageable>());
         Creep creep = creepObject.GetComponent<Creep>();
+        AddDamageable(creep);
         creep.creepSide = "blue";
         NetworkServer.Spawn(creepObject);
 
         creepObject = Instantiate(creepPrefab, redTeamCreepSpawnPoint.position, Quaternion.identity);
-        AddDamageable(creepObject.GetComponent<IDamageable>());
         creep = creepObject.GetComponent<Creep>();
+        AddDamageable(creep);
         creep.creepSide = "red";
         NetworkServer.Spawn(creepObject);
     }
