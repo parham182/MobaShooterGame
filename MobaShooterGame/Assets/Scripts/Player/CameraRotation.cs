@@ -16,6 +16,8 @@ public class CameraRotation : NetworkBehaviour
 
     private float xRotation;
     private float yRotation;
+    
+    bool canRotate;
 
     void OnEnable()
     {
@@ -40,6 +42,7 @@ public class CameraRotation : NetworkBehaviour
 
     private void Start()
     {
+        canRotate = true;
         if (!isLocalPlayer)
         {
             if (playerCamera != null)
@@ -63,7 +66,8 @@ public class CameraRotation : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (mouse == null) return;
-
+        if (!canRotate) return;
+       
         LookAround();
     }
 
@@ -85,5 +89,18 @@ public class CameraRotation : NetworkBehaviour
         // player yaw
         if (playerBody != null)
             playerBody.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+    }
+
+    public void DisableCameraRotation()
+    {
+        canRotate = !canRotate;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    public void EnableCameraRotation()
+    {
+        canRotate = !canRotate;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }
