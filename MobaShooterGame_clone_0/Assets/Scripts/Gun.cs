@@ -56,9 +56,10 @@ public class Gun : NetworkBehaviour
 
     private void Fire()
     {
-        if (!isLocalPlayer) return;
+        if (!isOwned) return;
 
         animator.SetTrigger("Fire");
+        print("shoot");
 
         Vector3 direction = Camera.main.transform.forward;
         direction += Camera.main.transform.right * Random.Range(-spread, spread);

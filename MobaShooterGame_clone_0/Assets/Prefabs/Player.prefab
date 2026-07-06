@@ -156,7 +156,10 @@ MonoBehaviour:
   maxHealth: 200
   currentHealth: 0
   playerSide: 0
-  gun: {fileID: 2063650390421600724}
+  gun: {fileID: 0}
+  AK47Prefab: {fileID: 5618301689321091759, guid: f4ce0dfa33a06b34aa858c6e19a303dd, type: 3}
+  coltPrefab: {fileID: 5618301689321091759, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
+  gunHolder: {fileID: 216971446571941668}
   isInShop: 0
   playerModelRenderer: {fileID: 729142319565032171}
   openShopRef: {fileID: -3673010412485384577, guid: 0d7a0a94fcf7ab71e9304f0d0d863675, type: 3}
@@ -2284,8 +2287,7 @@ Transform:
   m_LocalPosition: {x: 0.148, y: -0.111, z: 0.292}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7305102099148857381}
+  m_Children: []
   m_Father: {fileID: 1658553318888773078}
   m_LocalEulerAnglesHint: {x: 0, y: -9.908, z: 0}
 --- !u!1 &7292964456721363222
@@ -2827,88 +2829,6 @@ Transform:
   - {fileID: 7775759473605600414}
   m_Father: {fileID: 5904028862173573204}
   m_LocalEulerAnglesHint: {x: 75.35171, y: 6.3637977, z: 111.95287}
---- !u!1001 &2581416450577123376
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 216971446571941668}
-    m_Modifications:
-    - target: {fileID: -2357285287535757165, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: _assetId
-      value: 2241392558
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618301689321091759, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_Name
-      value: Colt
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618301689321091759, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: -2357285287535757165, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
---- !u!114 &2063650390421600724 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -4652069375072587292, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-  m_PrefabInstance: {fileID: 2581416450577123376}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da7e617f7380df846a9f7b81b640633a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gun
---- !u!4 &7305102099148857381 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5094669805592881173, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
-  m_PrefabInstance: {fileID: 2581416450577123376}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8942051224277420605
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -13,6 +13,9 @@ public class Player : NetworkBehaviour, IDamageable
     public string playerSide;
 
     public Gun gun;
+    public GameObject AK47Prefab;
+    public GameObject coltPrefab;
+    public Transform gunHolder;
     [SyncVar]
     public bool isInShop = false;
     public Renderer playerModelRenderer;
@@ -45,8 +48,7 @@ public class Player : NetworkBehaviour, IDamageable
 
     public override void OnStartClient()
     {
-        if (gun != null)
-            gun.side = playerSide;
+        GiveItem("colt");
     }
 
     [Command]
@@ -151,7 +153,28 @@ public class Player : NetworkBehaviour, IDamageable
                 break;
 
             case "AK47":
-                print("Player got AK47");
+                {
+                    // destroy current gun
+                    NetworkServer.Destroy(gun.gameObject);
+                    // spawn new gun
+                    GameObject newGunObj = Instantiate(AK47Prefab, gunHolder.position, gunHolder.rotation, gunHolder);
+                    Gun newGun = newGunObj.GetComponent<Gun>();
+                    newGun.side = playerSide;
+                    NetworkServer.Spawn(newGunObj, connectionToClient);
+                    // set it as current gun
+                    gun = newGun;
+                }
+                break;
+            case "colt":
+                {
+                    // spawn new gun
+                    GameObject newGunObj = Instantiate(coltPrefab, gunHolder.position, gunHolder.rotation, gunHolder);
+                    Gun newGun = newGunObj.GetComponent<Gun>();
+                    newGun.side = playerSide;
+                    NetworkServer.Spawn(newGunObj, connectionToClient);
+                    // set it as current gun
+                    gun = newGun;
+                }
                 break;
         }
     }
