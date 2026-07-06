@@ -153,7 +153,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 100
+  maxHealth: 200
   currentHealth: 0
   playerSide: 0
   gun: {fileID: 2063650390421600724}

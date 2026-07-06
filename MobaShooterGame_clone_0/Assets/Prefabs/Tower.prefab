@@ -316,8 +316,8 @@ MonoBehaviour:
   noCreepDamageReduction: 0.05
   TowerGun: {fileID: 4151917954730301844}
   attackPoint: {fileID: 8790108240060708356}
-  towerSide: 0
-  health: 200
+  towerSide: 
+  health: 500
 --- !u!114 &-1627497326133310529
 MonoBehaviour:
   m_ObjectHideFlags: 0
