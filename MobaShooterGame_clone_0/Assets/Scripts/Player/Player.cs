@@ -81,12 +81,14 @@ public class Player : NetworkBehaviour, IDamageable
             // enable movements
             GetComponent<PlayerMovement>().canMove = true;
             // enable camera rotation
+            GetComponent<CameraRotation>().EnableCameraRotation();
         } else
         {
             CurrencyManager.instance.shopMenu.SetActive(true);
             // disable movements
             GetComponent<PlayerMovement>().canMove = false;
             // disable camera rotation
+            GetComponent<CameraRotation>().DisableCameraRotation();
         }
     }
 
