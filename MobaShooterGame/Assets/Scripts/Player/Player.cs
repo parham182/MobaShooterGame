@@ -15,7 +15,8 @@ public class Player : NetworkBehaviour, IDamageable
     public Gun gun;
     [SyncVar]
     public bool isInShop = false;
-    public GameObject playerModelObject;
+    public Renderer playerModelRenderer;
+    // public GameObject fakeGun;
 
     [SerializeField] InputActionReference openShopRef;
 
@@ -33,7 +34,8 @@ public class Player : NetworkBehaviour, IDamageable
     {
         if (!isLocalPlayer) return;
 
-        playerModelObject.SetActive(false);
+        playerModelRenderer.enabled = false;
+        // Destroy(fakeGun);
     }
 
     public override void OnStartServer()

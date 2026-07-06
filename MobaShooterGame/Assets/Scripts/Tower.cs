@@ -64,7 +64,6 @@ public class Tower : NetworkBehaviour, IDamageable
                 }
                 Vector3 rayDir = Quaternion.Euler(0, -90f, 0) * TowerGun.transform.forward;
 
-                Debug.DrawRay(attackPoint.position, rayDir, Color.red);
                 if (Physics.Raycast(attackPoint.position, rayDir, out RaycastHit hit))
                 {
                     if (hit.collider.TryGetComponent(out IDamageable dmg))

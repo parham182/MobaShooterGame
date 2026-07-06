@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-public class BuyMedKit : NetworkBehaviour
+public class BuyMedKit : MonoBehaviour
 {
     public void OnClick()
     {

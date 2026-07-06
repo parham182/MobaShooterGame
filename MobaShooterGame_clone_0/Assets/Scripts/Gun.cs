@@ -58,7 +58,6 @@ public class Gun : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
-        SpawnEffect(muzzleFlash, firePoint.transform.position, Quaternion.identity, firePoint.transform);
         animator.SetTrigger("Fire");
 
         Vector3 direction = Camera.main.transform.forward;
@@ -72,6 +71,7 @@ public class Gun : NetworkBehaviour
     [Command]
     void CmdShoot(Vector3 origin, Vector3 direction)
     {
+        RpcPlayMuzzleFlash();
         RaycastHit hit;
 
         if (Physics.Raycast(origin, direction, out hit, range, impactlayer, QueryTriggerInteraction.Ignore))
@@ -85,32 +85,32 @@ public class Gun : NetworkBehaviour
                 else damageable.TakeDamage(damage, damageableType.Player, side);
             }
 
-            // Instantiate(Test, hit.point, Quaternion.identity);
-            SpawnEffect(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            SpawnEffect(hit.point, Quaternion.LookRotation(hit.normal));
         }
     }
 
-    [Server]
-    private void SpawnEffect(GameObject effectObject, Vector3 position, Quaternion rotation)
+    [ClientRpc]
+    void RpcPlayMuzzleFlash()
     {
-        // GameObject impactObject = Instantiate(effectObject, position, rotation);
-        // NetworkServer.Spawn(impactObject);
-        // StartCoroutine(DespawnAfter(impactObject, 2f));
+        GameObject obj = Instantiate(
+            muzzleFlash,
+            firePoint.transform.position,
+            firePoint.transform.rotation,
+            firePoint.transform);
+
+        Destroy(obj, 2f);
     }
 
     [Server]
-    private void SpawnEffect(GameObject effectObject, Vector3 position, Quaternion rotation, Transform parent)
+    void SpawnEffect(Vector3 position, Quaternion rotation)
     {
-        // GameObject impactObject = Instantiate(effectObject, position, rotation, parent);
-        // NetworkServer.Spawn(impactObject);
-        // StartCoroutine(DespawnAfter(impactObject, 2f));
+        RpcSpawnEffect(position, rotation);
     }
 
-    IEnumerator DespawnAfter(GameObject obj, float time)
+    [ClientRpc]
+    void RpcSpawnEffect(Vector3 position, Quaternion rotation)
     {
-        yield return new WaitForSeconds(time);
-
-        NetworkServer.UnSpawn(obj);
-        Destroy(obj);
+        GameObject obj = Instantiate(ImpactEffect, position, rotation);
+        Destroy(obj, 2f);
     }
 }
