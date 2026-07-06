@@ -102,8 +102,9 @@ GameObject:
   - component: {fileID: 5133387413856015208}
   - component: {fileID: 2149477243926492294}
   - component: {fileID: 1563566340395709568}
+  - component: {fileID: 4870158628462739352}
   m_Layer: 0
-  m_Name: Tower 2
+  m_Name: Tower final
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,15 +142,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  attackInterval: 0.6
-  attackRange: 20
-  damage: 5
-  playerDamageMultiplier: 2
+  attackInterval: 0.5
+  attackRange: 25
+  damage: 10
+  playerDamageMultiplier: 1.5
   noCreepDamageReduction: 0.05
   TowerGun: {fileID: 4707525296280849053}
-  attackPoint: {fileID: 8109860170681485363}
+  firePoint: {fileID: 8109860170681485363}
+  muzzleFlash: {fileID: 2085460313643633561, guid: 774eddb9c912423c791f2c421e5fbc21, type: 3}
   towerSide: red
-  health: 500
+  health: 1200
 --- !u!114 &1563566340395709568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,6 +169,27 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!65 &4870158628462739352
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131934319570043709}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.4057531, y: 2.0370762, z: 3.8719032}
+  m_Center: {x: 0.10050511, y: 1.0073158, z: -0.08023512}
 --- !u!1 &2572474987064747442
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,7 +232,6 @@ GameObject:
   - component: {fileID: 2350043467408637458}
   - component: {fileID: 4882528222135659467}
   - component: {fileID: 6206599895271264128}
-  - component: {fileID: 6215680821606258870}
   - component: {fileID: 3839068725031941965}
   m_Layer: 0
   m_Name: Cube
@@ -291,27 +313,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6215680821606258870
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4707525296280849053}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3839068725031941965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,7 +399,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8148115167975781295, guid: 71c7ae92b63d3774fbcd407afd6a8c93, type: 3}
+    - {fileID: 7060329842215445048, guid: 71c7ae92b63d3774fbcd407afd6a8c93, type: 3}
+    - {fileID: 5297733296502908721, guid: 71c7ae92b63d3774fbcd407afd6a8c93, type: 3}
+    - {fileID: 3774069098765409783, guid: 71c7ae92b63d3774fbcd407afd6a8c93, type: 3}
+    - {fileID: 6124084684522504942, guid: 71c7ae92b63d3774fbcd407afd6a8c93, type: 3}
+    - {fileID: 5071670305940790727, guid: 71c7ae92b63d3774fbcd407afd6a8c93, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

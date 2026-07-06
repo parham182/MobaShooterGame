@@ -11,7 +11,8 @@ public class Tower : NetworkBehaviour, IDamageable
     [SerializeField] float noCreepDamageReduction;
 
     [SerializeField] GameObject TowerGun;
-    [SerializeField] Transform attackPoint;
+    [SerializeField] Transform firePoint;
+    public GameObject muzzleFlash;
 
     public string towerSide;
     private IDamageable target;
@@ -19,11 +20,10 @@ public class Tower : NetworkBehaviour, IDamageable
     private float timer;
 
     [SyncVar]
-    public float health = 100;
+    public float health;
 
     public override void OnStartServer()
     {
-        health = 100;
         SpawnManager.instance.AddDamageable(this);
     }
 
@@ -58,10 +58,11 @@ public class Tower : NetworkBehaviour, IDamageable
 
             if (timer >= attackInterval)
             {
-                timer = 0;
                 float distance = Vector3.Distance(transform.position, target.GetPosision());
                 if (distance <= attackRange) // attack the target
                 {
+                    timer = 0;
+                    RpcPlayMuzzleFlash();
                     float finalDamage = 
                         target.GetDamageableType() == damageableType.Player
                         ? damage * playerDamageMultiplier
@@ -92,6 +93,17 @@ public class Tower : NetworkBehaviour, IDamageable
         }
     }
 
+    [ClientRpc]
+    void RpcPlayMuzzleFlash()
+    {
+        GameObject obj = Instantiate(
+            muzzleFlash,
+            firePoint.transform.position,
+            firePoint.transform.rotation,
+            firePoint.transform);
+
+        Destroy(obj, 2f);
+    }
     // ---------------- INTERFACE ----------------
 
     public string DamageableSide() => towerSide;

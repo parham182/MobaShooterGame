@@ -12,6 +12,7 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar(hook = nameof(OnSideChanged))]
     public string playerSide;
 
+    [SyncVar(hook = nameof(OnGunChanged))]
     public Gun gun;
     public GameObject AK47Prefab;
     public GameObject coltPrefab;
@@ -44,12 +45,10 @@ public class Player : NetworkBehaviour, IDamageable
     public override void OnStartServer()
     {
         currentHealth = maxHealth;
-    }
-
-    public override void OnStartClient()
-    {
         GiveItem("colt");
     }
+
+    // public override void OnStartClient() { }
 
     [Command]
     public void CmdSetInShop(bool value)
@@ -143,6 +142,7 @@ public class Player : NetworkBehaviour, IDamageable
     [Server]
     void GiveItem(string itemName)
     {
+        print("u buyed Item " + playerSide);
         switch(itemName)
         {
             case "med kit":
@@ -157,7 +157,7 @@ public class Player : NetworkBehaviour, IDamageable
                     // destroy current gun
                     NetworkServer.Destroy(gun.gameObject);
                     // spawn new gun
-                    GameObject newGunObj = Instantiate(AK47Prefab, gunHolder.position, gunHolder.rotation, gunHolder);
+                    GameObject newGunObj = Instantiate(AK47Prefab, gunHolder.position, gunHolder.rotation);
                     Gun newGun = newGunObj.GetComponent<Gun>();
                     newGun.side = playerSide;
                     NetworkServer.Spawn(newGunObj, connectionToClient);
@@ -168,7 +168,7 @@ public class Player : NetworkBehaviour, IDamageable
             case "colt":
                 {
                     // spawn new gun
-                    GameObject newGunObj = Instantiate(coltPrefab, gunHolder.position, gunHolder.rotation, gunHolder);
+                    GameObject newGunObj = Instantiate(coltPrefab, gunHolder.position, gunHolder.rotation);
                     Gun newGun = newGunObj.GetComponent<Gun>();
                     newGun.side = playerSide;
                     NetworkServer.Spawn(newGunObj, connectionToClient);
@@ -177,5 +177,15 @@ public class Player : NetworkBehaviour, IDamageable
                 }
                 break;
         }
+    }
+
+    void OnGunChanged(Gun oldGun, Gun newGun)
+    {
+        if (newGun == null)
+            return;
+
+        newGun.transform.SetParent(gunHolder, false);
+        // newGun.transform.localPosition = Vector3.zero;
+        // newGun.transform.localRotation = Quaternion.identity;
     }
 }

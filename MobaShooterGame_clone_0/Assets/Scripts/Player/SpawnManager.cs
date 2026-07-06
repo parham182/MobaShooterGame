@@ -52,6 +52,7 @@ public class SpawnManager : NetworkBehaviour
         }
 
         yield return new WaitForSeconds(30f);
+        StartCoroutine(Spawn());
     }
 
     public void AddDamageable(IDamageable damageable)
