@@ -9,9 +9,9 @@ public class Gun : NetworkBehaviour
     [SerializeField] GameObject Test;
     [SerializeField] float fireRate = 10f; 
     [SerializeField] float magezineSize = 7f;
+    [SerializeField] Animator animator;
     float nextFireTime;
     float fullMagezine;
-
 
     [SerializeField] LayerMask impactlayer;
     public float damage = 10f;
@@ -59,6 +59,7 @@ public class Gun : NetworkBehaviour
         if (!isLocalPlayer) return;
 
         SpawnEffect(muzzleFlash, firePoint.transform.position, Quaternion.identity, firePoint.transform);
+        animator.SetTrigger("Fire");
 
         Vector3 direction = Camera.main.transform.forward;
         direction += Camera.main.transform.right * Random.Range(-spread, spread);

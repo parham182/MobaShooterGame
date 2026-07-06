@@ -1,5 +1,4 @@
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +15,7 @@ public class Player : NetworkBehaviour, IDamageable
     public Gun gun;
     [SyncVar]
     public bool isInShop = false;
+    public GameObject playerModelObject;
 
     [SerializeField] InputActionReference openShopRef;
 
@@ -27,6 +27,13 @@ public class Player : NetworkBehaviour, IDamageable
     private void OnDisable()
     {
         openShopRef.action.performed -= TryToOpenShop;
+    }
+
+    private void Start()
+    {
+        if (!isLocalPlayer) return;
+
+        playerModelObject.SetActive(false);
     }
 
     public override void OnStartServer()
