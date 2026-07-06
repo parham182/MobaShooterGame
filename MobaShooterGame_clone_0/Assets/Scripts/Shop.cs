@@ -14,8 +14,7 @@ public class Shop : NetworkBehaviour
         {
             if (player.playerSide == shopSide)
             {
-                // player.isInShop = true;
-                // player.AddRegenBuff(hpRegBuff);
+                player.isInShop = true;
             }
         }
     }
@@ -28,8 +27,7 @@ public class Shop : NetworkBehaviour
         {
             if (player.playerSide == shopSide)
             {
-                // player.isInShop = false;
-                // player.RemoveRegenBuff(hpRegBuff);
+                player.isInShop = false;
             }
         }
     }

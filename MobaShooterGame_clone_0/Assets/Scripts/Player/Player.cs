@@ -12,6 +12,8 @@ public class Player : NetworkBehaviour, IDamageable
     public string playerSide;
 
     public Gun gun;
+    [SyncVar]
+    public bool isInShop = false;
 
     public override void OnStartServer()
     {
@@ -22,6 +24,12 @@ public class Player : NetworkBehaviour, IDamageable
     {
         if (gun != null)
             gun.side = playerSide;
+    }
+
+    [Command]
+    public void CmdSetInShop(bool value)
+    {
+        isInShop = value;
     }
 
     [Server]
@@ -39,10 +47,6 @@ public class Player : NetworkBehaviour, IDamageable
     [Server]
     public void Respawn()
     {
-        // transform.position = playerSide == "red"
-        //     ? SpawnManager.instance.redTeamSpawnPoint.position
-        //     : SpawnManager.instance.blueTeamSpawnPoint.position;
-
         if (playerSide == "red") 
             GetComponent<NetworkTransformReliable>()
             .RpcTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
