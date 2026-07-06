@@ -90,6 +90,7 @@ public class PlayerMovement : NetworkBehaviour
         Vector3 pos = cameraHolder.localPosition;
         pos.y = Mathf.Lerp(pos.y, targetCamY, crouchSitSpeed * Time.deltaTime);
         cameraHolder.localPosition = pos;
+        animator.SetBool("isCrouch", isCrouch);
     }
 
     private void walksoundEffect()
