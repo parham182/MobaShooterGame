@@ -62,6 +62,8 @@ MonoBehaviour:
   currentHealth: 0
   playerSide: 0
   gun: {fileID: 3880345382308086939}
+  isInShop: 0
+  openShopRef: {fileID: -3673010412485384577, guid: 0d7a0a94fcf7ab71e9304f0d0d863675, type: 3}
 --- !u!33 &7834614608429453336
 MeshFilter:
   m_ObjectHideFlags: 0

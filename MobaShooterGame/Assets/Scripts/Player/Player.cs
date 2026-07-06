@@ -1,5 +1,7 @@
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : NetworkBehaviour, IDamageable
 {
@@ -14,6 +16,18 @@ public class Player : NetworkBehaviour, IDamageable
     public Gun gun;
     [SyncVar]
     public bool isInShop = false;
+
+    [SerializeField] InputActionReference openShopRef;
+
+    private void OnEnable()
+    {
+        openShopRef.action.performed += TryToOpenShop;
+    }
+
+    private void OnDisable()
+    {
+        openShopRef.action.performed -= TryToOpenShop;
+    }
 
     public override void OnStartServer()
     {
@@ -57,6 +71,25 @@ public class Player : NetworkBehaviour, IDamageable
         currentHealth = maxHealth;
     }
 
+    private void TryToOpenShop(InputAction.CallbackContext value)
+    {
+        if (!isLocalPlayer || !isInShop) return;
+
+        if (CurrencyManager.instance.shopMenu.activeSelf)
+        {
+            CurrencyManager.instance.shopMenu.SetActive(false);
+            // enable movements
+            GetComponent<PlayerMovement>().canMove = true;
+            // enable camera rotation
+        } else
+        {
+            CurrencyManager.instance.shopMenu.SetActive(true);
+            // disable movements
+            GetComponent<PlayerMovement>().canMove = false;
+            // disable camera rotation
+        }
+    }
+
     void OnHealthChanged(float oldValue, float newValue)
     {
         if (!isLocalPlayer) return;
@@ -72,9 +105,43 @@ public class Player : NetworkBehaviour, IDamageable
             gun.side = newValue;
     }
 
+    [Command]
+    public void CmdBuyItem(string itemName)
+    {
+        if (!isInShop)
+            return;
+
+        int price = CurrencyManager.instance.GetPrice(itemName);
+
+        if (CurrencyManager.instance.GetGold(playerSide) < price)
+            return;
+
+        CurrencyManager.instance.RemoveGold(price, playerSide);
+
+        GiveItem(itemName);
+    }
+
     public string DamageableSide() => playerSide;
 
     public damageableType GetDamageableType() => damageableType.Player;
 
     public Vector3 GetPosision() => transform.position;
+
+    [Server]
+    void GiveItem(string itemName)
+    {
+        switch(itemName)
+        {
+            case "med kit":
+                {
+                    currentHealth += 50;
+                    if (currentHealth > maxHealth) currentHealth = maxHealth;
+                }
+                break;
+
+            case "AK47":
+                print("Player got AK47");
+                break;
+        }
+    }
 }

@@ -11,6 +11,7 @@ public class CurrencyManager : NetworkBehaviour
     public int redPlayerGold;
 
     [SerializeField] private TMP_Text goldText;
+    public GameObject shopMenu;
 
     public static CurrencyManager instance;
 
@@ -67,5 +68,23 @@ public class CurrencyManager : NetworkBehaviour
             goldText.text = bluePlayerGold.ToString();
         else
             goldText.text = redPlayerGold.ToString();
+    }
+
+    public int GetPrice(string itemName)
+    {
+        switch(itemName)
+        {
+            case "med kit": return 10;
+            case "AK47": return 200;
+        }
+        return 999999;
+    }
+
+    public int GetGold(string playerSide)
+    {
+        if (playerSide == "blue")
+            return bluePlayerGold;
+        else
+            return redPlayerGold;
     }
 }
