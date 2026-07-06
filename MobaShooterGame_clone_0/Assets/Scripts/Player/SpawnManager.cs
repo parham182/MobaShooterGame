@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Mirror;
@@ -26,24 +27,31 @@ public class SpawnManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        InvokeRepeating(nameof(SpawnCreeps), 10f, 30f);
+        StartCoroutine(Spawn());
         
     }
 
     [Server]
-    void SpawnCreeps()
+    IEnumerator Spawn()
     {
-        GameObject creepObject = Instantiate(creepPrefab, blueTeamCreepSpawnPoint.position, Quaternion.identity);
-        Creep creep = creepObject.GetComponent<Creep>();
-        AddDamageable(creep);
-        creep.creepSide = "blue";
-        NetworkServer.Spawn(creepObject);
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject creepObject = Instantiate(creepPrefab, blueTeamCreepSpawnPoint.position, Quaternion.identity);
+            Creep creep = creepObject.GetComponent<Creep>();
+            AddDamageable(creep);
+            creep.creepSide = "blue";
+            NetworkServer.Spawn(creepObject);
 
-        creepObject = Instantiate(creepPrefab, redTeamCreepSpawnPoint.position, Quaternion.identity);
-        creep = creepObject.GetComponent<Creep>();
-        AddDamageable(creep);
-        creep.creepSide = "red";
-        NetworkServer.Spawn(creepObject);
+            creepObject = Instantiate(creepPrefab, redTeamCreepSpawnPoint.position, Quaternion.identity);
+            creep = creepObject.GetComponent<Creep>();
+            AddDamageable(creep);
+            creep.creepSide = "red";
+            NetworkServer.Spawn(creepObject);
+
+            yield return new WaitForSeconds(1f);
+        }
+
+        yield return new WaitForSeconds(30f);
     }
 
     public void AddDamageable(IDamageable damageable)
