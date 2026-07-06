@@ -1926,6 +1926,8 @@ MonoBehaviour:
   syncInterval: 0
   bluePlayerGold: 0
   redPlayerGold: 0
+  goldText: {fileID: 0}
+  shopMenu: {fileID: 0}
 --- !u!1 &2108930220
 GameObject:
   m_ObjectHideFlags: 0
