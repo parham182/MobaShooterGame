@@ -1,12 +1,13 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Creep : NetworkBehaviour, IDamageable
 {
     [SyncVar]
     public string creepSide;
-    [SyncVar]
+    [SyncVar(hook = nameof(OnHealthChanged))]
     public float health;
 
     [Header("Creep Stats")]
@@ -22,9 +23,16 @@ public class Creep : NetworkBehaviour, IDamageable
 
     public GameObject muzzleFlash;
     public GameObject ImpactEffect;
+    public Slider globalHealthbarSlider;
 
     private IDamageable target;
     private float timer = 0;
+
+    void Start()
+    {
+        globalHealthbarSlider.maxValue = health;
+        globalHealthbarSlider.value = health;
+    }
 
     [ServerCallback]
     private void Update()
@@ -146,5 +154,10 @@ public class Creep : NetworkBehaviour, IDamageable
             SpawnManager.instance.RemoveDamageable(this);
             NetworkServer.Destroy(gameObject);
         }
+    }
+
+    void OnHealthChanged(float oldValue, float newValue)
+    {
+        globalHealthbarSlider.value = newValue;
     }
 }

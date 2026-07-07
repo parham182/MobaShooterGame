@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Player : NetworkBehaviour, IDamageable
 {
@@ -20,6 +21,7 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar]
     public bool isInShop = false;
     public Renderer playerModelRenderer;
+    public Slider globalHealthbarSlider;
     // public GameObject fakeGun;
 
     [SerializeField] InputActionReference openShopRef;
@@ -59,10 +61,13 @@ public class Player : NetworkBehaviour, IDamageable
     [Server]
     public void TakeDamage(float damage, damageableType attackerType, string attackerSide)
     {
+        if (attackerSide == playerSide) return;
+        
         currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
+            if (attackerType == damageableType.Player) CurrencyManager.instance.AddGold(200, attackerSide);
             currentHealth = 0;
             Respawn();
         }
@@ -104,6 +109,9 @@ public class Player : NetworkBehaviour, IDamageable
 
     void OnHealthChanged(float oldValue, float newValue)
     {
+        globalHealthbarSlider.maxValue = maxHealth;
+        globalHealthbarSlider.value = newValue;
+
         if (!isLocalPlayer) return;
 
         Healthbar.instance.slider.maxValue = maxHealth;

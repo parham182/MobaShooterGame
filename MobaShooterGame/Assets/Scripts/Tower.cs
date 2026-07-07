@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tower : NetworkBehaviour, IDamageable
 {
@@ -16,15 +17,22 @@ public class Tower : NetworkBehaviour, IDamageable
 
     public string towerSide;
     private IDamageable target;
+    public Slider globalHealthbarSlider;
 
     private float timer;
 
-    [SyncVar]
+    [SyncVar(hook = nameof(OnHealthChanged))]
     public float health;
 
     public override void OnStartServer()
     {
         SpawnManager.instance.AddDamageable(this);
+    }
+
+    void Start()
+    {
+        globalHealthbarSlider.maxValue = health;
+        globalHealthbarSlider.value = health;
     }
 
     [ServerCallback]
@@ -104,6 +112,12 @@ public class Tower : NetworkBehaviour, IDamageable
 
         Destroy(obj, 2f);
     }
+
+    void OnHealthChanged(float oldValue, float newValue)
+    {
+        globalHealthbarSlider.value = newValue;
+    }
+
     // ---------------- INTERFACE ----------------
 
     public string DamageableSide() => towerSide;
