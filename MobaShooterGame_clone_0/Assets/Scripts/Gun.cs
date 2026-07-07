@@ -16,7 +16,7 @@ public class Gun : NetworkBehaviour
     public float damage = 10f;
     public float range = 100f;
     public string side;
-    float spread = 0.05f;
+    public float spread;
 
     [Header("effects")]
     public GameObject firePoint;

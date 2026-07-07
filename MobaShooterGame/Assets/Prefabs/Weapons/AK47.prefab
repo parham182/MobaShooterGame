@@ -1097,6 +1097,7 @@ MonoBehaviour:
   damage: 20
   range: 100
   side: 0
+  spread: 0.05
   firePoint: {fileID: 428877891053266424}
   muzzleFlash: {fileID: 2085460313643633561, guid: 774eddb9c912423c791f2c421e5fbc21, type: 3}
   ImpactEffect: {fileID: 6401007441845867967, guid: bb9dd54bcb29f6be29e14bb6d7c0e482, type: 3}

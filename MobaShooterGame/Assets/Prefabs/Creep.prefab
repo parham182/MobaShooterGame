@@ -188,9 +188,10 @@ MonoBehaviour:
   health: 100
   bountyGold: 50
   attackRange: 15
-  attackInterval: 1.2
+  attackInterval: 1
   damage: 6
   towerDamageMultiplier: 1.2
+  spread: 0.05
   firePoint: {fileID: 313815389908586806}
   animator: {fileID: 7425516421282863785}
   navMeshAgent: {fileID: 2239182872152014268}

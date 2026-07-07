@@ -34,6 +34,8 @@ public class SpawnManager : NetworkBehaviour
     [Server]
     IEnumerator Spawn()
     {
+        yield return new WaitForSeconds(10f);
+
         for (int i = 0; i < 3; i++)
         {
             GameObject creepObject = Instantiate(creepPrefab, blueTeamCreepSpawnPoint.position, Quaternion.identity);
@@ -51,7 +53,7 @@ public class SpawnManager : NetworkBehaviour
             yield return new WaitForSeconds(1f);
         }
 
-        yield return new WaitForSeconds(30f);
+        yield return new WaitForSeconds(20f);
         StartCoroutine(Spawn());
     }
 

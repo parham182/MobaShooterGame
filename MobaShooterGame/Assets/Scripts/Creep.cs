@@ -16,6 +16,7 @@ public class Creep : NetworkBehaviour, IDamageable
     [SerializeField] private float attackInterval;
     [SerializeField] private float damage;
     [SerializeField] private float towerDamageMultiplier;
+    [SerializeField] private float spread;
     [SerializeField] private Transform firePoint;
     [SerializeField] Animator animator;
     [SerializeField] NavMeshAgent navMeshAgent;
@@ -73,6 +74,9 @@ public class Creep : NetworkBehaviour, IDamageable
                     timer = 0;
                     RpcPlayMuzzleFlash();
                     dir = (target.GetPosision() - transform.position).normalized;
+
+                    dir += Camera.main.transform.right * Random.Range(-spread, spread);
+                    dir += Camera.main.transform.up * Random.Range(-spread, spread);
 
                     if (Physics.Raycast(firePoint.position, dir, out RaycastHit hit))
                     {
