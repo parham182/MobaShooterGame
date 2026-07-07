@@ -98,6 +98,10 @@ public class Tower : NetworkBehaviour, IDamageable
         if (health <= 0)
         {
             NetworkServer.Destroy(gameObject);
+            // game over
+                // show who is winner
+                // restart scene
+                GameManager.instance.GameOver(towerSide == "red" ? "blue" : "red");
         }
     }
 
