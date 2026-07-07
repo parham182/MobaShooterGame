@@ -62,7 +62,7 @@ public class Player : NetworkBehaviour, IDamageable
     public void TakeDamage(float damage, damageableType attackerType, string attackerSide)
     {
         if (attackerSide == playerSide) return;
-        
+
         currentHealth -= damage;
 
         if (currentHealth <= 0)
@@ -76,7 +76,7 @@ public class Player : NetworkBehaviour, IDamageable
     [Server]
     public void Respawn()
     {
-        if (playerSide == "red") 
+        if (playerSide == "red")
             GetComponent<NetworkTransformReliable>()
             .RpcTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
         else
@@ -97,7 +97,8 @@ public class Player : NetworkBehaviour, IDamageable
             GetComponent<PlayerMovement>().canMove = true;
             // enable camera rotation
             GetComponent<CameraRotation>().EnableCameraRotation();
-        } else
+        }
+        else
         {
             CurrencyManager.instance.shopMenu.SetActive(true);
             // disable movements
@@ -147,11 +148,12 @@ public class Player : NetworkBehaviour, IDamageable
 
     public Vector3 GetPosision() => transform.position;
 
+
     [Server]
     void GiveItem(string itemName)
     {
         print("u buyed Item " + playerSide);
-        switch(itemName)
+        switch (itemName)
         {
             case "med kit":
                 {

@@ -2060,6 +2060,8 @@ MonoBehaviour:
   - {fileID: 6401007441845867967, guid: bb9dd54bcb29f6be29e14bb6d7c0e482, type: 3}
   - {fileID: 5618301689321091759, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
   - {fileID: 5618301689321091759, guid: f4ce0dfa33a06b34aa858c6e19a303dd, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -3738,7 +3740,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  bluePlayerGold: 0
+  bluePlayerGold: 1000
   redPlayerGold: 0
   goldText: {fileID: 1094249167}
   shopMenu: {fileID: 1043830332}
