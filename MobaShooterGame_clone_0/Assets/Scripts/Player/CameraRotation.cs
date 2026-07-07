@@ -62,17 +62,30 @@ public class CameraRotation : NetworkBehaviour
             yRotation = playerBody.localEulerAngles.y;
     }
 
+    public void DisableCameraRotation()
+    {
+        canRotate = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    public void EnableCameraRotation()
+    {
+        canRotate = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+    
     void LateUpdate()
     {
         if (!isLocalPlayer) return;
         if (mouse == null) return;
-        if (!canRotate) return;
-       
         LookAround();
     }
 
     void LookAround()
     {
+        if (!canRotate) return;
+
         Vector2 look = mouse.action.ReadValue<Vector2>();
 
         float mouseX = look.x * sensitivity * Time.deltaTime;
@@ -91,16 +104,4 @@ public class CameraRotation : NetworkBehaviour
             playerBody.localRotation = Quaternion.Euler(0f, yRotation, 0f);
     }
 
-    public void DisableCameraRotation()
-    {
-        canRotate = !canRotate;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-    public void EnableCameraRotation()
-    {
-        canRotate = !canRotate;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
 }

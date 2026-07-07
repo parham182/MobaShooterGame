@@ -158,7 +158,7 @@ MonoBehaviour:
   currentHealth: 0
   playerSide: 0
   gun: {fileID: 0}
-  AK47Prefab: {fileID: 5618301689321091759, guid: f4ce0dfa33a06b34aa858c6e19a303dd, type: 3}
+  AK47Prefab: {fileID: 4799752880175850490, guid: d2d60d83dfed3d9549142e319610d7c2, type: 3}
   coltPrefab: {fileID: 5618301689321091759, guid: 6a55708e3590df04ea03bb0adc546a19, type: 3}
   gunHolder: {fileID: 216971446571941668}
   isInShop: 0
