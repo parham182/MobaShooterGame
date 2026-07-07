@@ -75,6 +75,7 @@ public class CurrencyManager : NetworkBehaviour
         switch(itemName)
         {
             case "med kit": return 10;
+            case "bullet": return 20;
             case "AK47": return 200;
         }
         return 999999;

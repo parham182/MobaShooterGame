@@ -185,7 +185,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   creepSide: 
-  health: 100
+  health: 80
   bountyGold: 50
   attackRange: 15
   attackInterval: 1

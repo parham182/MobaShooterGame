@@ -62,17 +62,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: DirtImpact
       objectReference: {fileID: 0}
+    - target: {fileID: 186004, guid: df6885b13dec8be4582be8c2c2219da2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 486004, guid: df6885b13dec8be4582be8c2c2219da2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.90987
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 486004, guid: df6885b13dec8be4582be8c2c2219da2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -29.067093
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 486004, guid: df6885b13dec8be4582be8c2c2219da2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.0000038146973
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 486004, guid: df6885b13dec8be4582be8c2c2219da2, type: 3}
       propertyPath: m_LocalRotation.w

@@ -201,20 +201,23 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   fireRate: 3
-  magezineSize: 7
-  animator: {fileID: -631420224622500490}
-  impactlayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  damage: 15
+  fullMagazine: 8
+  bulletsInMagazine: 8
+  bulletAmount: 140
+  maxBulletAmount: 140
+  damage: 20
   range: 100
-  side: 0
   spread: 0.03
+  side: 0
+  animator: {fileID: -631420224622500490}
+  impactLayer:
+    serializedVersion: 2
+    m_Bits: 0
   firePoint: {fileID: 6836440532130171130}
   muzzleFlash: {fileID: 2085460313643633561, guid: 774eddb9c912423c791f2c421e5fbc21, type: 3}
   ImpactEffect: {fileID: 6401007441845867967, guid: bb9dd54bcb29f6be29e14bb6d7c0e482, type: 3}
-  bloodImpactEffect: {fileID: 0}
   fireRef: {fileID: 61838253740702034, guid: 0d7a0a94fcf7ab71e9304f0d0d863675, type: 3}
+  reloadRef: {fileID: -8827111997940660758, guid: 0d7a0a94fcf7ab71e9304f0d0d863675, type: 3}
 --- !u!114 &-2357285287535757165
 MonoBehaviour:
   m_ObjectHideFlags: 0

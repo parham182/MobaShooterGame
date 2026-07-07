@@ -8,6 +8,8 @@ public class Healthbar : MonoBehaviour
     public Slider slider;
     public TMP_Text healthText;
     public TMP_Text healthRegenText;
+    public TMP_Text bulletStatusText;
+
     private void Awake()
     {
         instance = this;

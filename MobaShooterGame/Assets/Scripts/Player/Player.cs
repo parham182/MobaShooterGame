@@ -89,6 +89,7 @@ public class Player : NetworkBehaviour, IDamageable
                 .RpcTeleport(SpawnManager.instance.blueTeamSpawnPoint.position);
         }
 
+        GiveItem("bullet");
         currentHealth = maxHealth;
     }
 
@@ -130,7 +131,6 @@ public class Player : NetworkBehaviour, IDamageable
 
     void OnGunChanged(string oldValue, string newValue)
     {
-        print("gun changed");
         coltGun.SetActive(false);
         ak47Gun.SetActive(false);
 
@@ -180,6 +180,10 @@ public class Player : NetworkBehaviour, IDamageable
         {
             case "med kit":
                 currentHealth = Mathf.Min(currentHealth + 80, maxHealth);
+                break;
+
+            case "bullet":
+                gun.RefreshBullet();
                 break;
 
             case "colt":

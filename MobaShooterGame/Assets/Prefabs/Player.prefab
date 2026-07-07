@@ -2848,6 +2848,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AK47
       objectReference: {fileID: 0}
+    - target: {fileID: 4799752880175850490, guid: d2d60d83dfed3d9549142e319610d7c2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8954819565623546241, guid: d2d60d83dfed3d9549142e319610d7c2, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.065

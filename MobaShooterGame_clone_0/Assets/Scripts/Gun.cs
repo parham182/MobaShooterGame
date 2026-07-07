@@ -1,68 +1,104 @@
-using System.Collections;
 using Mirror;
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Gun : NetworkBehaviour
 {
-    [SerializeField] float fireRate = 10f; 
-    [SerializeField] float magezineSize = 7f;
-    [SerializeField] Animator animator;
-    float nextFireTime;
-    float fullMagezine;
+    [Header("Gun Settings")]
+    [SerializeField] float fireRate = 10f;
+    public float fullMagazine = 30;
+    
+    [SyncVar(hook = nameof(UpdateUI))]
+    public float bulletsInMagazine;
 
-    [SerializeField] LayerMask impactlayer;
+    [SyncVar(hook = nameof(UpdateUI))]
+    public float bulletAmount;
+
+    public float maxBulletAmount;
+
     public float damage = 10f;
     public float range = 100f;
-    public string side;
     public float spread;
+    public string side;
 
-    [Header("effects")]
+    [SerializeField] Animator animator;
+
+    float nextFireTime;
+
+    [Header("Raycast")]
+    [SerializeField] LayerMask impactLayer;
+
+    [Header("Effects")]
     public GameObject firePoint;
     public GameObject muzzleFlash;
     public GameObject ImpactEffect;
-    public GameObject bloodImpactEffect;
 
+    [Header("Reload")]
+    [SyncVar]
+    bool isReloading;
+
+    [Header("Input")]
     [SerializeField] InputActionReference fireRef;
-
-    bool canShoot;
+    [SerializeField] InputActionReference reloadRef;
 
     private void OnEnable()
     {
         fireRef.action.Enable();
+        reloadRef.action.performed += TryToReload;
     }
 
     private void OnDisable()
     {
         fireRef.action.Disable();
+        reloadRef.action.performed -= TryToReload;
     }
 
-    void Start()
+    public override void OnStartAuthority()
     {
-        fullMagezine = magezineSize;
+        UpdateUI(0,0);
     }
 
     void Update()
     {
+        if (!isOwned)
+            return;
+
         if (fireRef.action.IsPressed() && Time.time >= nextFireTime)
         {
             nextFireTime = Time.time + (1f / fireRate);
             Fire();
-
         }
     }
 
-    private void Fire()
+    void TryToReload(InputAction.CallbackContext value)
     {
-        if (!isOwned) return;
+        if (bulletsInMagazine < fullMagazine)
+            if (bulletAmount > 0)
+                Reload();
+    }
+
+    void Fire()
+    {
+        if (isReloading)
+            return;
+
+        if (bulletsInMagazine <= 0)
+        {
+            if (bulletAmount > 0)
+                Reload();
+
+            return;
+        }
 
         animator.SetTrigger("Fire");
-        print("shoot");
 
         Vector3 direction = Camera.main.transform.forward;
-        direction += Camera.main.transform.right * Random.Range(-spread, spread);
-        direction += Camera.main.transform.up * Random.Range(-spread, spread);
+
+        direction += Camera.main.transform.right *
+                     Random.Range(-spread, spread);
+        direction += Camera.main.transform.up *
+                     Random.Range(-spread, spread);
+
         direction.Normalize();
 
         CmdShoot(Camera.main.transform.position, direction);
@@ -71,21 +107,50 @@ public class Gun : NetworkBehaviour
     [Command]
     void CmdShoot(Vector3 origin, Vector3 direction)
     {
+        if (isReloading)
+            return;
+
+        if (bulletsInMagazine <= 0)
+            return;
+
+        bulletsInMagazine--;
+
         RpcPlayMuzzleFlash();
+
         RaycastHit hit;
 
-        if (Physics.Raycast(origin, direction, out hit, range, impactlayer, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(
+            origin,
+            direction,
+            out hit,
+            range))
         {
+            print(hit.collider.name);
             if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
+
                 if (damageable.GetDamageableType() == damageableType.Building)
                 {
-                    if (damageable.DamageableSide() != side) damageable.TakeDamage(damage, damageableType.Player, side);
+                    if (damageable.DamageableSide() != side)
+                    {
+                        damageable.TakeDamage(
+                            damage,
+                            damageableType.Player,
+                            side);
+                    }
                 }
-                else damageable.TakeDamage(damage, damageableType.Player, side);
+                else
+                {
+                    damageable.TakeDamage(
+                        damage,
+                        damageableType.Player,
+                        side);
+                }
             }
 
-            SpawnEffect(hit.point, Quaternion.LookRotation(hit.normal));
+            RpcSpawnEffect(
+                hit.point,
+                Quaternion.LookRotation(hit.normal));
         }
     }
 
@@ -98,19 +163,113 @@ public class Gun : NetworkBehaviour
             firePoint.transform.rotation,
             firePoint.transform);
 
-        Destroy(obj, 2f);
-    }
 
-    [Server]
-    void SpawnEffect(Vector3 position, Quaternion rotation)
-    {
-        RpcSpawnEffect(position, rotation);
+        Destroy(obj,2f);
     }
 
     [ClientRpc]
     void RpcSpawnEffect(Vector3 position, Quaternion rotation)
     {
-        GameObject obj = Instantiate(ImpactEffect, position, rotation);
-        Destroy(obj, 2f);
+        GameObject obj = Instantiate(
+            ImpactEffect,
+            position,
+            rotation);
+
+
+        Destroy(obj,2f);
+    }
+
+    [Server]
+    public void RefreshBullet()
+    {
+        bulletAmount = maxBulletAmount;
+        bulletsInMagazine = fullMagazine;
+    }
+
+    void UpdateUI(float oldValue,float newValue)
+    {
+        if (!isOwned)
+            return;
+
+
+        if (Healthbar.instance != null)
+        {
+            Healthbar.instance.bulletStatusText.text =
+                $"{bulletsInMagazine}/{bulletAmount}";
+        }
+    }
+
+    void Reload()
+    {
+        if (!isOwned)
+            return;
+
+
+        if (isReloading)
+            return;
+
+
+        CmdStartReload();
+
+
+        animator.SetTrigger("Reload");
+
+
+        if (Healthbar.instance != null)
+            Healthbar.instance.bulletStatusText.text =
+                "Reloading...";
+    }
+
+    [Command]
+    void CmdStartReload()
+    {
+        if (isReloading)
+            return;
+
+
+        if (bulletAmount <= 0)
+            return;
+
+
+        if (bulletsInMagazine >= fullMagazine)
+            return;
+
+
+        isReloading = true;
+    }
+
+    // Animation Event
+    public void EndOfReloading()
+    {
+        if (!isOwned)
+            return;
+
+
+        CmdFinishReload();
+    }
+
+    [Command]
+    void CmdFinishReload()
+    {
+        if (!isReloading)
+            return;
+
+
+        float needed =
+            fullMagazine - bulletsInMagazine;
+
+
+
+        if (bulletAmount >= needed)
+        {
+            bulletAmount -= needed;
+            bulletsInMagazine += needed;
+        }
+        else
+        {
+            bulletsInMagazine += bulletAmount;
+            bulletAmount = 0;
+        }
+        isReloading = false;
     }
 }
