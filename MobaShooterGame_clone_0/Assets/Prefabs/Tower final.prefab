@@ -144,7 +144,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   attackInterval: 0.4
-  attackRange: 25
+  attackRange: 30
   damage: 8
   playerDamageMultiplier: 1.5
   noCreepDamageReduction: 0.05
@@ -153,7 +153,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 2085460313643633561, guid: 774eddb9c912423c791f2c421e5fbc21, type: 3}
   towerSide: red
   globalHealthbarSlider: {fileID: 5151225941188190006}
-  health: 1200
+  health: 1500
 --- !u!114 &1563566340395709568
 MonoBehaviour:
   m_ObjectHideFlags: 0

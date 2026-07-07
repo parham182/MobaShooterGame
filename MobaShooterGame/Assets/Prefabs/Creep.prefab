@@ -186,8 +186,8 @@ MonoBehaviour:
   syncInterval: 0
   creepSide: 
   health: 100
-  bountyGold: 60
-  attackRange: 10
+  bountyGold: 50
+  attackRange: 15
   attackInterval: 1.2
   damage: 6
   towerDamageMultiplier: 1.2

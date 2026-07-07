@@ -200,14 +200,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Test: {fileID: 1896887852745702268, guid: 0ac7954f85a7a1b5eaa892126d54e0f7, type: 3}
   fireRate: 3
   magezineSize: 7
   animator: {fileID: -631420224622500490}
   impactlayer:
     serializedVersion: 2
     m_Bits: 4294967295
-  damage: 10
+  damage: 15
   range: 100
   side: 0
   firePoint: {fileID: 6836440532130171130}

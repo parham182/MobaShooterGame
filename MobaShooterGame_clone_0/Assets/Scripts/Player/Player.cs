@@ -179,7 +179,7 @@ public class Player : NetworkBehaviour, IDamageable
         switch (itemName)
         {
             case "med kit":
-                currentHealth = Mathf.Min(currentHealth + 50, maxHealth);
+                currentHealth = Mathf.Min(currentHealth + 80, maxHealth);
                 break;
 
             case "colt":

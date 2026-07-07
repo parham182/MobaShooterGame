@@ -1088,13 +1088,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  fireRate: 8
+  fireRate: 7
   magezineSize: 7
   animator: {fileID: 3053648818201373476}
   impactlayer:
     serializedVersion: 2
     m_Bits: 4294967295
-  damage: 14
+  damage: 20
   range: 100
   side: 0
   firePoint: {fileID: 428877891053266424}
