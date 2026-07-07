@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 
 public class Gun : NetworkBehaviour
 {
-    [SerializeField] GameObject Test;
     [SerializeField] float fireRate = 10f; 
     [SerializeField] float magezineSize = 7f;
     [SerializeField] Animator animator;

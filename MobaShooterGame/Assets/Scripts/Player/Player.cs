@@ -14,15 +14,18 @@ public class Player : NetworkBehaviour, IDamageable
     public string playerSide;
 
     [SyncVar(hook = nameof(OnGunChanged))]
+    private string currentGun = "";
+
     public Gun gun;
-    public GameObject AK47Prefab;
-    public GameObject coltPrefab;
-    public Transform gunHolder;
+
+    public GameObject coltGun;
+    public GameObject ak47Gun;
+
     [SyncVar]
     public bool isInShop = false;
+
     public Renderer playerModelRenderer;
     public Slider globalHealthbarSlider;
-    // public GameObject fakeGun;
 
     [SerializeField] InputActionReference openShopRef;
 
@@ -38,10 +41,8 @@ public class Player : NetworkBehaviour, IDamageable
 
     private void Start()
     {
-        if (!isLocalPlayer) return;
-
-        playerModelRenderer.enabled = false;
-        // Destroy(fakeGun);
+        if (isLocalPlayer)
+            playerModelRenderer.enabled = false;
     }
 
     public override void OnStartServer()
@@ -49,8 +50,6 @@ public class Player : NetworkBehaviour, IDamageable
         currentHealth = maxHealth;
         GiveItem("colt");
     }
-
-    // public override void OnStartClient() { }
 
     [Command]
     public void CmdSetInShop(bool value)
@@ -61,13 +60,16 @@ public class Player : NetworkBehaviour, IDamageable
     [Server]
     public void TakeDamage(float damage, damageableType attackerType, string attackerSide)
     {
-        if (attackerSide == playerSide) return;
+        if (attackerSide == playerSide)
+            return;
 
         currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
-            if (attackerType == damageableType.Player) CurrencyManager.instance.AddGold(200, attackerSide);
+            if (attackerType == damageableType.Player)
+                CurrencyManager.instance.AddGold(200, attackerSide);
+
             currentHealth = 0;
             Respawn();
         }
@@ -77,35 +79,34 @@ public class Player : NetworkBehaviour, IDamageable
     public void Respawn()
     {
         if (playerSide == "red")
+        {
             GetComponent<NetworkTransformReliable>()
-            .RpcTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
+                .RpcTeleport(SpawnManager.instance.redTeamSpawnPoint.position);
+        }
         else
+        {
             GetComponent<NetworkTransformReliable>()
-            .RpcTeleport(SpawnManager.instance.blueTeamSpawnPoint.position);
+                .RpcTeleport(SpawnManager.instance.blueTeamSpawnPoint.position);
+        }
 
         currentHealth = maxHealth;
     }
 
-    private void TryToOpenShop(InputAction.CallbackContext value)
+    void TryToOpenShop(InputAction.CallbackContext value)
     {
-        if (!isLocalPlayer || !isInShop) return;
+        if (!isLocalPlayer || !isInShop)
+            return;
 
-        if (CurrencyManager.instance.shopMenu.activeSelf)
-        {
-            CurrencyManager.instance.shopMenu.SetActive(false);
-            // enable movements
-            GetComponent<PlayerMovement>().canMove = true;
-            // enable camera rotation
+        bool opened = CurrencyManager.instance.shopMenu.activeSelf;
+
+        CurrencyManager.instance.shopMenu.SetActive(!opened);
+
+        GetComponent<PlayerMovement>().canMove = opened;
+
+        if (opened)
             GetComponent<CameraRotation>().EnableCameraRotation();
-        }
         else
-        {
-            CurrencyManager.instance.shopMenu.SetActive(true);
-            // disable movements
-            GetComponent<PlayerMovement>().canMove = false;
-            // disable camera rotation
             GetComponent<CameraRotation>().DisableCameraRotation();
-        }
     }
 
     void OnHealthChanged(float oldValue, float newValue)
@@ -113,7 +114,8 @@ public class Player : NetworkBehaviour, IDamageable
         globalHealthbarSlider.maxValue = maxHealth;
         globalHealthbarSlider.value = newValue;
 
-        if (!isLocalPlayer) return;
+        if (!isLocalPlayer)
+            return;
 
         Healthbar.instance.slider.maxValue = maxHealth;
         Healthbar.instance.slider.value = newValue;
@@ -124,6 +126,29 @@ public class Player : NetworkBehaviour, IDamageable
     {
         if (gun != null)
             gun.side = newValue;
+    }
+
+    void OnGunChanged(string oldValue, string newValue)
+    {
+        print("gun changed");
+        coltGun.SetActive(false);
+        ak47Gun.SetActive(false);
+
+        switch (newValue)
+        {
+            case "colt":
+                coltGun.SetActive(true);
+                gun = coltGun.GetComponent<Gun>();
+                break;
+
+            case "AK47":
+                ak47Gun.SetActive(true);
+                gun = ak47Gun.GetComponent<Gun>();
+                break;
+        }
+
+        if (gun != null)
+            gun.side = playerSide;
     }
 
     [Command]
@@ -148,54 +173,22 @@ public class Player : NetworkBehaviour, IDamageable
 
     public Vector3 GetPosision() => transform.position;
 
-
     [Server]
     void GiveItem(string itemName)
     {
-        print("u buyed Item " + playerSide);
         switch (itemName)
         {
             case "med kit":
-                {
-                    currentHealth += 50;
-                    if (currentHealth > maxHealth) currentHealth = maxHealth;
-                }
+                currentHealth = Mathf.Min(currentHealth + 50, maxHealth);
+                break;
+
+            case "colt":
+                currentGun = "colt";
                 break;
 
             case "AK47":
-                {
-                    // destroy current gun
-                    NetworkServer.Destroy(gun.gameObject);
-                    // spawn new gun
-                    GameObject newGunObj = Instantiate(AK47Prefab, gunHolder.position, gunHolder.rotation);
-                    Gun newGun = newGunObj.GetComponent<Gun>();
-                    newGun.side = playerSide;
-                    NetworkServer.Spawn(newGunObj, connectionToClient);
-                    // set it as current gun
-                    gun = newGun;
-                }
-                break;
-            case "colt":
-                {
-                    // spawn new gun
-                    GameObject newGunObj = Instantiate(coltPrefab, gunHolder.position, gunHolder.rotation);
-                    Gun newGun = newGunObj.GetComponent<Gun>();
-                    newGun.side = playerSide;
-                    NetworkServer.Spawn(newGunObj, connectionToClient);
-                    // set it as current gun
-                    gun = newGun;
-                }
+                currentGun = "AK47";
                 break;
         }
-    }
-
-    void OnGunChanged(Gun oldGun, Gun newGun)
-    {
-        if (newGun == null)
-            return;
-
-        newGun.transform.SetParent(gunHolder, false);
-        // newGun.transform.localPosition = Vector3.zero;
-        // newGun.transform.localRotation = Quaternion.identity;
     }
 }
