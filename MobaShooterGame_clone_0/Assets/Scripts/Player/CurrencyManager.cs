@@ -52,7 +52,7 @@ public class CurrencyManager : NetworkBehaviour
         Player player = NetworkClient.localPlayer.GetComponent<Player>();
         if (oldValue < newValue && player.playerSide == "blue")
         {
-            player.PlayLocalSound(goldClip);
+            // player.PlayLocalSound(goldClip);
         }
     }
 
@@ -62,7 +62,7 @@ public class CurrencyManager : NetworkBehaviour
         Player player = NetworkClient.localPlayer.GetComponent<Player>();
         if (oldValue < newValue && player.playerSide == "red")
         {
-            player.PlayLocalSound(goldClip);
+            // player.PlayLocalSound(goldClip);
         }
     }
 
