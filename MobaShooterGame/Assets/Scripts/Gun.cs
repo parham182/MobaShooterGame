@@ -32,6 +32,8 @@ public class Gun : NetworkBehaviour
     public GameObject firePoint;
     public GameObject muzzleFlash;
     public GameObject ImpactEffect;
+    [SerializeField] AudioClip fireSound;
+    [SerializeField] AudioSource fireAudioSource;
 
     [Header("Reload")]
     [SyncVar]
@@ -125,7 +127,6 @@ public class Gun : NetworkBehaviour
             out hit,
             range))
         {
-            print(hit.collider.name);
             if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
 
@@ -163,6 +164,8 @@ public class Gun : NetworkBehaviour
             firePoint.transform.rotation,
             firePoint.transform);
 
+        fireAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        fireAudioSource.PlayOneShot(fireSound);
 
         Destroy(obj,2f);
     }

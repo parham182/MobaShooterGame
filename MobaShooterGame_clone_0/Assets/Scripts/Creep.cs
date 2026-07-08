@@ -22,6 +22,17 @@ public class Creep : NetworkBehaviour, IDamageable
     [SerializeField] NavMeshAgent navMeshAgent;
     [SerializeField] GameObject creepModel;
 
+    [Header("Footstep")]
+    [SerializeField] AudioClip dialogSound;
+    [SerializeField] AudioClip fireSound;
+    [SerializeField] AudioSource fireAudioSource;
+    [SerializeField] AudioClip[] footstepSounds;
+    [SerializeField] AudioSource walkAudioSource;
+    [SerializeField] AudioSource dialogAudioSource;
+    [SerializeField] float footstepInterval = 0.4f;
+
+    private float footstepTimer;
+
     public GameObject muzzleFlash;
     public GameObject ImpactEffect;
     public Slider globalHealthbarSlider;
@@ -35,10 +46,23 @@ public class Creep : NetworkBehaviour, IDamageable
         globalHealthbarSlider.value = health;
     }
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        Invoke(nameof(PlayDialog), 0.1f);
+    }
+
+    [Server]
+    void PlayDialog()
+    {
+        if (Random.Range(1, 4) == 1) RpcPlayDialogSound();
+    }
+
     [ServerCallback]
     private void Update()
     {
         timer += Time.deltaTime;
+        footstepTimer += Time.deltaTime;
         // find target
         float closestTargetDistance = float.MaxValue;
         target = null;
@@ -61,6 +85,7 @@ public class Creep : NetworkBehaviour, IDamageable
             float distance = Vector3.Distance(transform.position, target.GetPosision());
             if (distance <= attackRange) // attack the target
             {
+                footstepTimer = footstepInterval;
                 animator.SetBool("isRuning", false);
                 navMeshAgent.isStopped = true;
                 // look at enemy
@@ -99,6 +124,12 @@ public class Creep : NetworkBehaviour, IDamageable
                 navMeshAgent.SetDestination(target.GetPosision());
                 navMeshAgent.isStopped = false;
                 animator.SetBool("isRuning", true);
+
+                if (footstepTimer >= footstepInterval)
+                {
+                    footstepTimer = 0;
+                    RpcPlayFootstep();
+                }
             }
         }
     }
@@ -112,7 +143,26 @@ public class Creep : NetworkBehaviour, IDamageable
             firePoint.transform.rotation,
             firePoint.transform);
 
+        fireAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        fireAudioSource.PlayOneShot(fireSound);
+
         Destroy(obj, 2f);
+    }
+
+    [ClientRpc]
+    void RpcPlayDialogSound()
+    {
+        dialogAudioSource.PlayOneShot(dialogSound);
+    }
+
+    [ClientRpc]
+    void RpcPlayFootstep()
+    {
+        if (footstepSounds.Length == 0 || walkAudioSource == null)
+            return;
+        walkAudioSource.PlayOneShot(
+
+            footstepSounds[Random.Range(0, footstepSounds.Length)]);
     }
 
     [Server]

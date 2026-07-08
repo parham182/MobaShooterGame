@@ -15,6 +15,9 @@ public class Tower : NetworkBehaviour, IDamageable
     [SerializeField] Transform firePoint;
     public GameObject muzzleFlash;
 
+    [SerializeField] AudioClip fireSound;
+    [SerializeField] AudioSource fireAudioSource;
+
     public string towerSide;
     private IDamageable target;
     public Slider globalHealthbarSlider;
@@ -113,6 +116,9 @@ public class Tower : NetworkBehaviour, IDamageable
             firePoint.transform.position,
             firePoint.transform.rotation,
             firePoint.transform);
+
+        fireAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        fireAudioSource.PlayOneShot(fireSound);
 
         Destroy(obj, 2f);
     }

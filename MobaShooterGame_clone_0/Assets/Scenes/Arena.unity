@@ -5438,10 +5438,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  bluePlayerGold: 1000
-  redPlayerGold: 1000
+  bluePlayerGold: 0
+  redPlayerGold: 0
   goldText: {fileID: 1094249167}
   shopMenu: {fileID: 1043830332}
+  goldClip: {fileID: 8300000, guid: d419727af2cf303ffb2967339416a99d, type: 3}
 --- !u!1 &1850099952
 GameObject:
   m_ObjectHideFlags: 0

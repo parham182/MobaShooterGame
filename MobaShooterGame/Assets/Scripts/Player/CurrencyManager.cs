@@ -15,6 +15,8 @@ public class CurrencyManager : NetworkBehaviour
 
     public static CurrencyManager instance;
 
+    [SerializeField] AudioClip goldClip;
+
     private void Awake()
     {
         instance = this;
@@ -47,11 +49,21 @@ public class CurrencyManager : NetworkBehaviour
     void OnBlueGoldChanged(int oldValue, int newValue)
     {
         UpdateUI();
+        Player player = NetworkClient.localPlayer.GetComponent<Player>();
+        if (oldValue < newValue && player.playerSide == "blue")
+        {
+            player.PlayLocalSound(goldClip);
+        }
     }
 
     void OnRedGoldChanged(int oldValue, int newValue)
     {
         UpdateUI();
+        Player player = NetworkClient.localPlayer.GetComponent<Player>();
+        if (oldValue < newValue && player.playerSide == "red")
+        {
+            player.PlayLocalSound(goldClip);
+        }
     }
 
     void UpdateUI()
@@ -65,9 +77,12 @@ public class CurrencyManager : NetworkBehaviour
             return;
 
         if (player.playerSide == "blue")
+        {
             goldText.text = bluePlayerGold.ToString();
-        else
+        } else
+        {
             goldText.text = redPlayerGold.ToString();
+        }
     }
 
     public int GetPrice(string itemName)
